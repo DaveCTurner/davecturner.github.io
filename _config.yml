@@ -1,0 +1,10 @@
+title: David Turner says...
+author: ""
+baseurl: "/"
+url: "https://davecturner.github.io"
+twitter_username: "@DaveCTurner"
+
+markdown: kramdown
+theme: minima
+plugins:
+  - jekyll-feed
