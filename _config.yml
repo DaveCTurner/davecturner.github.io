@@ -1,0 +1,10 @@
+title: David Turner
+author: ""
+baseurl: "/"
+url: "https://davecturner.github.io"
+twitter_username: davecturner
+
+markdown: kramdown
+theme: minima
+plugins:
+  - jekyll-feed
