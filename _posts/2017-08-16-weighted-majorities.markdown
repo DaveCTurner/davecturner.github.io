@@ -1,26 +1,18 @@
 ---
 layout: post
-title:  "The importance of weighted majorities"
+title:  "Weighted majorities"
 date:   2017-08-15 17:45:09 +0000
 ---
 
-In distributed systems, failure is not an option. It's inevitable. A very basic
-design principle is to be resilient to any single-node failure, as the
-probability of this happening gets uncomfortably close to 1 over very short
-timescales. Even if you have access to super-duper reliable hardware, you will
-still occasionally need to perform maintenance on it, and the ability to take a
-node out of service without taking the whole system down is mightily useful for
-this.
-
-Your system is probably also exposed to some failure modes that can
+Most distributed systems are exposed to some failure modes that can
 simultaneously take out multiple nodes, such as the failure of a shared power
 feed or networking hardware. In the cloud, this possibility for correlated
-failures is presented abstractly as zones (AWS and GCE) or failure domains
-(Azure), and you may have a similar abstraction in your own data centre too.
+failures is presented abstractly as zones (AWS and GCE) or fault domains
+(Azure), and you may have a similar abstraction in your own data centres too.
 The implication is that correlated failures may occur within each zone, and you
 should design for this, but failures across zones should be independent.
-Indeed, the [AWS SLA](http://TODO) considers a whole-zone failure not even to
-be a service-level outage.
+Indeed, the [AWS EC2 SLA](http://aws.amazon.com/ec2/sla) considers a
+single-zone failure not even to be a service-level outage.
 
 Zones are also a limited resource. There are few regions in AWS and GCE that
 have more than three zones. Three zones is the absolute minimum for running a
@@ -34,7 +26,7 @@ every majority subset of _N_ &#x222A; {_n_}, so a one-node reconfiguration
 can't introduce inconsistency. Suppose you have three zones, _A_, _B_ and _C_,
 containing three nodes _a_, _b_ and _c<sub>1</sub>_, and suppose you want to
 replace _c<sub>1</sub>_ with a new node _c<sub>2</sub>_, also in zone _C_. The
-reconfigurations you need is one of the following:
+reconfiguration sequence you need is one of the following:
 
 | _a_ | _b_ | _c<sub>1</sub>_ | _c<sub>2</sub>_
 |-----|-----|-----------------|----------------
