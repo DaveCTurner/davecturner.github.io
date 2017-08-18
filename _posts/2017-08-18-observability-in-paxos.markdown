@@ -4,12 +4,10 @@ title:  "Observability in Paxos clusters"
 date:   2017-08-18 20:03:17 +0000
 ---
 
-It is important to expose information about the health of systems to operators,
-in case there is some kind of fault that needs action to resolve. The trouble
-with fault-tolerant systems is that they tolerate faults: by design they can
-appear to be working normally despite some underlying problem, but there is a
-limit to how many such problems can be tolerated before the system entirely
-fails so it is important to be aware of them.
+The trouble with fault-tolerant systems is that they tolerate faults: by design
+they can appear to be working normally despite some underlying problem, but
+there is a limit to how many such problems can be tolerated before the system
+entirely fails so it is important to be aware of them.
 
 ### Monitoring health
 
