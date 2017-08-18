@@ -122,6 +122,16 @@ have been sent before its peers receive the `proposed` message, so the proposal
 will result in a quorum of `accepted` messages which results in the proposed
 value being chosen as required. QED.
 
+### Oversize messages
+
+The time it takes to send and receive a message is a function of its size, so
+if a message is too large then nodes can time-out before it is fully delivered.
+This can lead to a leadership election, and also breaks the liveness proof
+above: if `promised` messages may then arbitrarily long to deliver then there
+may never be a time when there is a unique active node and therefore no
+election may ever succeed. It's a good idea to limit the size of values and to
+set any timeouts accordingly.
+
 ### Abdication
 
 There is no need for nodes to send out `prepare` messages for terms that they
@@ -190,8 +200,9 @@ enough `offer-vote` messages to trigger a leader election in a later term.
 Instead, they continually receive `offer-catch-up` messages and perform
 catch-ups. This is not much of a problem as the situation will resolve itself
 at the next election, but it is operationally irritating: if it weren't for
-this state then you could consider catch-ups to be indicative of problems in
-the cluster for monitoring purposes.
+this state then you could consider catch-ups to be indicative of [problems in
+the cluster for monitoring purposes]({% post_url
+2017-08-18-observability-in-paxos %}).
 
 The fix is to include the candidate's current term in its `seek-votes` message,
 and if a leader receives a `seek-votes` message containing a later term then it

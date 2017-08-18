@@ -1,8 +1,8 @@
-title: David Turner
+title: David Turner says...
 author: ""
 baseurl: "/"
 url: "https://davecturner.github.io"
-twitter_username: davecturner
+twitter_username: "@DaveCTurner"
 
 markdown: kramdown
 theme: minima
