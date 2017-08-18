@@ -59,9 +59,10 @@ blue (if in a term owned by another node). If a leader times out and becomes an
 incumbent it also attempts to propose a new no-op value in a term that it owns
 which if successfully chosen will reinstate it as a leader again. The timeouts
 should be set such that leaders become incumbents in good time to become
-leaders again before any followers. Note that each timeout is implemented based
-on the node's local clock and there is no need to share time values between
-nodes, so there is no need for any kind of clock synchronisation in this setup.
+leaders again before any followers become candidates. Note that each timeout is
+implemented based on the node's local clock and there is no need to share time
+values between nodes, so there is no need for any kind of clock synchronisation
+in this setup.
 
 It is hopefully reasonably obvious in this setup that eventually either there
 exists a node that has learned the next value or else all nodes have become
