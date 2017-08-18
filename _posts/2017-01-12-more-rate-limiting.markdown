@@ -20,7 +20,7 @@ the system before the bucket fills up.
 
 As drawn, the bucket capacity _L<sub>C</sub>_ and the leak rate _r_ are
 constant, but for more advanced rate-limiting situations one may want them to
-vary. Their ratio, _L<sub>C/r_ is the _reset time_: the time it takes for a
+vary. Their ratio, _L<sub>C</sub>/r_ is the _reset time_: the time it takes for a
 full bucket to completely empty by leaking.
 
 ### Slow-start
