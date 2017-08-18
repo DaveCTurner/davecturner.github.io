@@ -190,7 +190,7 @@ Instead, they continually receive `offer-catch-up` messages and perform
 catch-ups. This is not much of a problem as the situation will resolve itself
 at the next election, but it is operationally irritating: if it weren't for
 this state then you could consider catch-ups to be indicative of problems in
-the cluster for monitoring purposees.
+the cluster for monitoring purposes.
 
 The fix is to include the candidate's current term in its `seek-votes` message,
 and if a leader receives a `seek-votes` message containing a later term then it
