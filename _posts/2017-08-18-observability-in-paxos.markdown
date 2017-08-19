@@ -53,7 +53,7 @@ It is important to verify this as it is possible for a partial network
 partition to allow all followers to communicate with the leader but not with
 each other. In this kind of partition if the leader were to fail then none of
 the followers may be able to form a majority and take over as a new leader,
-so the cluster would immediately be _unhealthy_.
+so the cluster would immediately become unhealthy.
 
 It's turned out to be useful for nodes to continue to report unhealthiness for
 some period of time (say 10s) after technically becoming healthy again, to
