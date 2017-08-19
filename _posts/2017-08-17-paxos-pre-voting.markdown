@@ -199,9 +199,10 @@ minority can't accept any proposals from the leader, but nor can they gather
 enough `offer-vote` messages to trigger a leader election in a later term.
 Instead, they continually receive `offer-catch-up` messages and perform
 catch-ups. This is not much of a problem as the situation will resolve itself
-at the next election, but it is operationally irritating: if it weren't for
-this state then you could consider catch-ups to be indicative of [problems in
-the cluster for monitoring purposes]({% post_url
+at the next election, but elections should be relatively uncommon so the
+situation could last for many days. It's also operationally irritating: if it
+weren't for this state then you could consider candidate nodes to be indicative
+of [problems in the cluster for monitoring purposes]({% post_url
 2017-08-18-observability-in-paxos %}).
 
 The fix is to include the candidate's current term in its `seek-votes` message,
