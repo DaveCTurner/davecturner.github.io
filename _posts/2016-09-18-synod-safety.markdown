@@ -34,7 +34,7 @@ and **Y**:
 
 Learned values must have been proposed, so this means that value **X** was
 proposed in term _P_ and value **Y** was proposed in term _Q_ by sending
-`proposed` (a.k.a. phase 2b) messages:
+`proposed` (a.k.a. phase 2a) messages:
 
 ![03-proposed-learned-values]({{
 "/assets/2016-09-18/03-proposed-learned-values.png" | relative_url }})
@@ -50,28 +50,36 @@ proposal was made whose value is not **X**:
 ![05-first-different-term]({{ "/assets/2016-09-18/05-first-different-term.png"
 | relative_url }})
 
-_R_ must exists since the proposals made in terms _P_ and _Q_ had different
+_R_ must exist since the proposals made in terms _P_ and _Q_ had different
 values. Put differently, all the proposals made in terms earlier than _R_ but
 no earlier than _P_ have value **X**:
 
-![06-promises-overlap]({{ "/assets/2016-09-18/06-promises-overlap.png" | relative_url }})
+![06-previous-values-equal]({{ "/assets/2016-09-18/06-previous-values-equal.png" | relative_url }})
 
-The value in term _P_ must have been learned because it was accepted by a
-majority _S_ of acceptors, and the value in term _R_ was proposed because of
-promises from another majority of acceptors which therefore overlaps _S_. Pick
-one of the acceptors in the overlap, say `a`, which accepted a value in term
-_P_ and then sent a promise for term _R_. It must have happened in that order
-as, having sent a promise for term _R_, `a` would then not have been able to
-accept a value in term _P_ since _P_ &lt; _R_.
+The value in term _P_ must have been learned because a majority _S_ of acceptors
+sent acceptance (a.k.a. phase 2b) messages:
 
-![07-last-accepted]({{ "/assets/2016-09-18/07-last-accepted.png" | relative_url }})
+![07-value-accepted-by-quorum]({{ "/assets/2016-09-18/07-value-accepted-by-quorum.png" | relative_url }})
+
+Also, the value in term _R_ was proposed because of
+promises from another majority of acceptors:
+
+![08-promises-by-quorum]({{ "/assets/2016-09-18/08-promises-by-quorum.png" | relative_url }})
+
+Since these majorities overlap, there is at least one node `a` which belongs to
+both sets: it accepted a value in term _P_ and then sent a promise for term
+_R_.  It must have happened in that order as, having sent a promise for term
+_R_, `a` would then not have been able to accept a value in term _P_ since _P_
+&lt; _R_:
+
+![09-intersection-accepted]({{ "/assets/2016-09-18/09-intersection-accepted.png" | relative_url }})
 
 Of course `a` may also have accepted some proposals in terms later than _P_
-before sending a promise for term _R_. In any case, the highest-numbered term
-accepted by `a` before it sent its promise for term _R_ has value **X** as it
-is no earlier than _P_ and is strictly earlier than _R_.
+before sending a promise for term _R_, but in any case, the highest-numbered
+term accepted by `a` before it sent its promise for term _R_ is no earlier than
+_P_ and is strictly earlier than _R_, and therefore has value **X**:
 
-![08-last-accepted]({{ "/assets/2016-09-18/08-last-accepted.png" | relative_url }})
+![10-intersection-last-accepted]({{ "/assets/2016-09-18/10-intersection-last-accepted.png" | relative_url }})
 
 Therefore when `a` sent its promise for term _R_, the promise must have
 included the last-accepted term which is no earlier than _P_ and is strictly
@@ -80,7 +88,7 @@ earlier than _R_, and whose value is therefore **X**.
 Other nodes also sent promises for term _R_ and some of these may have included
 a previously-accepted term, all of which are strictly less than _R_:
 
-![09-last-accepted]({{ "/assets/2016-09-18/09-last-accepted.png" | relative_url }})
+![11-other-last-accepted]({{ "/assets/2016-09-18/11-other-last-accepted.png" | relative_url }})
 
 In any case, the value proposed in term _R_ must be the value of the promise
 with greatest last-accepted term, which must be **X** as the greatest
