@@ -5,11 +5,17 @@ date:   2017-08-18 20:03:17 +0000
 ---
 
 The trouble with fault-tolerant systems is that they tolerate faults: by design
-they can appear to be working normally despite some underlying problem, but
-there is a limit to how many such problems can be tolerated before the system
-entirely fails so it is important to be aware of them.
+they can appear to be working normally despite some underlying problem.
 
-### Monitoring health
+Consensus algorithms such as Paxos are designed to keep working as long as more
+than half of the nodes in the cluster are healthy and communicating with each
+other. In practice you want to know about unhealthy nodes or connectivity
+issues so they can be fixed before they lead to a total failure.
+
+Fortunately there are some fairly simple symptoms that can be used to detect
+all sorts of hidden problems.
+
+### Health
 
 A _healthy_ Paxos cluster is capable of accepting instructions from clients and
 makes regular progress. A cluster can be healthy despite underlying faults, but
@@ -57,9 +63,9 @@ so the cluster would immediately become unhealthy.
 
 It's turned out to be useful for nodes to continue to report unhealthiness for
 some period of time (say 10s) after technically becoming healthy again, to
-mitigate the risk that a persistent yet intermittent fault is missed by the
-monitoring system. _Any_ unhealthiness indicates some kind of genuine fault and
-if the fault isn't transient then the operators need to know about it.
+mitigate the risk that a persistent yet intermittent fault is missed. _Any_
+unhealthiness indicates some kind of genuine fault and if the fault isn't
+transient then the operators need to know about it.
 
 It's also turned out to be useful to enter a warning state if any peer was
 recently in a warning state (for reasons other than this one) as this
@@ -78,11 +84,27 @@ fact that a minority of nodes are struggling. The trouble is that if just one
 of the healthy nodes goes offline then the median latency can shift
 dramatically, triggering a cascading failure.
 
-This means it's a good idea to monitor the response latencies of all the nodes
-as well as the client-facing (i.e. median) latency, to catch any problems
+This means it's a good idea to keep track of the response latencies of all the
+nodes as well as the client-facing (i.e. median) latency, to catch any problems
 before they start to have consequences.
 
-### Logging unusual activity
+### Bandwidth
+
+Most of the network bandwidth required to run a Paxos implementation is used
+sending data from the leader to its followers. When the leader fails and
+another node takes over there can be a dramatic change in the flow pattern of
+data in the system, which risks overwhelming some network links. I don't have a
+comprehensive answer for how to detect this in advance, but be aware that it
+can happen.
+
+Leadership changes should be needed relatively rarely (I count four occurrences
+in the last two months in one of our production clusters) but can be disruptive
+when they occur, so it could be a good idea to add a Revolutionary Monkey to
+your [Simian
+Army](https://medium.com/netflix-techblog/the-netflix-simian-army-16e57fbab116)
+to depose the current leader more frequently than would happen naturally.
+
+### Unusual activity
 
 In normal running each node of the cluster executes quite a small subset of its
 code, avoiding all of the branches that are only active during some kind of
@@ -95,8 +117,8 @@ failure. More specifically, this is something like:
   its current term, and to send `proposed` messages due to timeouts or client
 requests.  It occasionally becomes an incumbent, but never a candidate.
 
-It has turned out to be worthwhile and simple to log all activity that is not
-on these paths. The resulting logs are empty when the system is operating
-normally, but contain very detailed information whenever something unexpected
-happens.
+It has turned out to be worthwhile and simple to record, in detail, all
+activity that is not on these paths. The resulting logs are empty when the
+system is operating normally, but contain very detailed information whenever
+something unexpected happens.
 
