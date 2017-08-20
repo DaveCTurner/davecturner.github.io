@@ -87,12 +87,43 @@ with the sender in order to learn the missing values. If instead it receives
 message using a term that is no less than any of the terms received in the
 `offer-vote` messages.
 
-Candidates perform this process repeatedly with random, growing, timeouts after
-each unsuccessful attempt. As long as the timeouts grow to be sufficiently long
-compared with the communication round-trip-time between nodes,
-eventually-almost-certainly one candidate will time out at a point in time
-where there are no in-flight messages and no other candidate times out for at
-least three round-trip times.
+### Quiescence
+
+The protocol as described is _eventually quiescent_: absent any external
+stimulation (timeouts or client activity) eventually the system reaches a state
+where there are no messages either in flight or being processed. This is,
+approximately, because there are no loops in the graph of the messages that can
+be transmitted on receipt of each type of message:
+
+![messages]({{ "/assets/2017-08-17/messages.png" | relative_url }})
+
+This helps to completely rule out certain kinds of livelock. The situation is a
+little more complicated than this because a cluster reconfiguration requires a
+new phase 1 to take place, so an `accepted` message can result in a `prepare`
+message too, but this doesn't result in livelock as there can only be finitely
+many pending reconfigurations.
+
+If the round-trip time between nodes is bounded then this observation puts a
+bound on the time it takes for the system to become quiescent after external
+stimulation. In particular if there are no pending proposals at any node then
+it takes at most three round-trips to become quiescent.
+
+### Liveness
+
+As noted above, eventually either there exists a node that has learned the next
+value or else all nodes have become candidates. It remains to show that if all
+nodes are candidates, at least one of which can communicate with a quorum of
+its peers, then the system still makes progress.
+
+If candidates wake up too frequently then the system will never become
+quiescent, but if they wake up too infrequently then the system will take a
+long time to recover from an unexpected failure of the leader. Absent a tight
+bound on the network's round-trip time, it is preferable that candidates wake
+up with random and growing timeouts because as long as the timeouts grow to be
+sufficiently long compared with the communication round-trip-time between
+nodes, eventually-almost-certainly one candidate will time out at a point in
+time when the system is quiescent and no other node will time out for at least
+three round-trips.
 
 **Sketch Theorem** Such a candidate, if connected to a quorum of peers, makes
 progress.
@@ -122,15 +153,16 @@ have been sent before its peers receive the `proposed` message, so the proposal
 will result in a quorum of `accepted` messages which results in the proposed
 value being chosen as required. QED.
 
-### Oversize messages
+### Unboundedly large messages
 
 The time it takes to send and receive a message is a function of its size, so
-if a message is too large then nodes can time-out before it is fully delivered.
-This can lead to a leadership election, and also breaks the liveness proof
-above: if `promised` messages may then arbitrarily long to deliver then there
-may never be a time when there is a unique active node and therefore no
-election may ever succeed. It's a good idea to limit the size of values and to
-set any timeouts accordingly.
+it is only safe to assume that the round-trip time is bounded if messages have
+bounded size. In practice if a message is too large then nodes time-out before
+it is fully delivered. This can lead to a leadership election, and also breaks
+the liveness proof above: if `promised` messages may then arbitrarily long to
+deliver then there may never be a time when there is a unique active node and
+therefore no election may ever succeed. It's a good idea to limit the size of
+values and to set any timeout limits accordingly.
 
 ### Abdication
 
