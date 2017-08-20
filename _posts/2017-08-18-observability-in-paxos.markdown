@@ -65,6 +65,16 @@ It's also turned out to be useful to enter a warning state if any peer was
 recently in a warning state (for reasons other than this one) as this
 propagates warnings across the whole cluster.
 
+
+### Latency
+
+Another latent fault to watch out for is to do with (hoho) latency. High latency at an otherwise healthy-looking node can be a strong leading indicator of impending doom, such as the system getting too close to at some kind of throughout limit.
+
+Since Paxos is a majority-based system, the latency presented to clients is related to the _median_ latency of the individual nodes, which can hide the fact that a minority of nodes are struggling. The trouble is that if just one of the healthy nodes goes offline then the median latency can shift dramatically, triggering a cascading failure.
+
+This means it's a good idea to monitor the response latencies of all the nodes as well as the client-facing (i.e. median) latency, to catch any problems before they start to have consequences.
+
+
 ### Logging unusual activity
 
 In normal running each node of the cluster executes quite a small subset of its
@@ -82,3 +92,4 @@ It has turned out to be worthwhile and simple to log all activity that is not
 on these paths. The resulting logs are empty when the system is operating
 normally, but contain very detailed information whenever something unexpected
 happens.
+
