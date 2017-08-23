@@ -4,7 +4,7 @@ title:  "Unbounded pipelining in dynamically reconfigurable Paxos clusters"
 date:   2016-06-09 19:09:09 +0000
 ---
 
-**Abstract**
+### Abstract
 
 Consensus is an essential ingredient of a fault-tolerant distributed system
 systems. When equipped with a consensus algorithm a distributed system can act
