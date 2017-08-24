@@ -26,7 +26,7 @@ It's also useful for bisection if most commits contain code that compiles and
 passes (a reasonable proportion of) all of the tests. This obviously isn't
 always possible.
 
-## Rebase, don't merge
+## Prefer rebase to merge
 
 Merging is where two independent sequences of commits (green and blue) are
 combined at a _merge commit_ (red):
@@ -54,7 +54,8 @@ so can be made much more supportive of bisection.
 * When rebasing, there is a clear division of responsibility between the two
   developers. The green developer pushed first, so the onus is on the blue
 developer to rebase their changes correctly. When merging, the green and blue
-commits may all be correct and yet the merged code is not. Again, bisection does
+commits may all be correct and yet the merged code is not, but neither contributor
+really _owns_ the merge commit in the same way. Again, bisection does
 not work well as a tool to find a problem in the merge commit.
 
 Additionally, bisection only really works if there is always a well-defined
@@ -62,7 +63,7 @@ commit half-way between the known-good and known-bad states. In the merging
 diagram above there is no particularly sensible half-way point between the red
 and black commits.
 
-## Merge, don't fast-forward
+## Prefer merge to fast-forward
 
 The trouble with naively rebasing is that you end up with a sequence of
 commits, some of which contain work-in-progress and others contain finished
@@ -71,7 +72,7 @@ features:
 ![fast-forwarded]({{ "/assets/2016-01-31/fast-forward.png" | relative_url }})
 
 When looking back through history, it's useful to be able to distinguish the
-finished ones from the WIP. The best way to do this is to perform a trivial
+finished commits from the WIP. My preferred way to do this is to perform a trivial
 merge at the end of each feature, rather than simply to fast-forward to the tip
 of the feature branch:
 
@@ -83,12 +84,12 @@ apply.
 If a bisection hits an untestably bad WIP commit it's normally a good idea to
 jump to a nearby merge and continue from there.
 
-## Squashing considered harmful
+## Prefer not to squash
 
 Squashing a whole feature branch into a single commit (often done at rebase)
 destroys the usefulness of bisection because the resulting commit is not
 fine-grained, so not particularly helpful for later debugging. The argument in
 favour of squashing seems to be that it yields a "tidier" history, which I
-charitably interpret to mean "contains no WIP commits". Trivial merges are a
-much better idea for distinguishing the WIP from finished features without
+charitably interpret to mean "contains no WIP commits". I much prefer trivial merges
+for distinguishing the WIP from finished features without
 losing the valuable detail of the WIP commits either.
