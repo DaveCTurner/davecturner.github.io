@@ -94,5 +94,6 @@ effectively. Here is a logarithmic version of the chart above, showing the
 
 ### Conclusion
 
-Stop using histograms and start using cumulative frequency diagrams and
-(log-)exceedance curves.
+Try using cumulative frequency diagrams and
+(log-)exceedance curves instead of histograms and kernel density estimates.
+You might like them. If you don't, [let's hear about it](https://twitter.com/DaveCTurner)!
