@@ -3,6 +3,16 @@
 
 @import "{{ site.theme }}";
 
+blockquote {
+  background-color: #f0f0f0;
+  border: 1px solid #d0d0d0;
+  padding: 8px 30px;
+  font-size: inherit;
+  letter-spacing: inherit;
+  font-style: italic;
+  color: inherit;
+}
+
 .page-navigation {
   font-size: 80%;
   display: block;
@@ -33,6 +43,20 @@ table.weights-table {
 
   td {
     min-width: 60px;
+    text-align: center;
+  }
+
+  thead > tr {
+    border-bottom: 1px solid #c0c0c0;
+  }
+}
+
+table.message-types-table {
+  border-collapse: collapse;
+  margin-bottom: 10px;
+
+  td {
+    min-width: 120px;
     text-align: center;
   }
 
