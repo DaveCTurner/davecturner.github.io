@@ -31,7 +31,8 @@ as Raft-like fully-concurrent reconfigurations and more besides.
 
 ### Further Reading
 
-Some followup articles by simbo1905:
+Reader [simbo1905](https://simbo1905.blog/) coined the name _UPaxos_ for this
+protocol and wrote some nice followup articles:
 
 * [Paxos reconfiguration stalls](https://simbo1905.blog/2016/12/15/paxos-reconfiguration-stalls)
 
