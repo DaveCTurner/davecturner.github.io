@@ -243,3 +243,12 @@ performs another phase 1 at an even later term. This has the effect of keeping
 a stable leader while allowing the other nodes to start accepting its proposals
 again, which avoids upsetting the monitoring system.
 
+---
+
+**Addendum 2017-08-31**
+
+There's an enthusiastic review of this article over on [simbo1905's
+blog](https://simbo1905.blog/2017/08/22/pre-voting-in-distributed-consensus/)
+which gives some more intuitive coverage of the ideas in this article as well
+as some thoughts on how this mechanism relates to the one in
+[TRex](https://github.com/trex-paxos/trex).

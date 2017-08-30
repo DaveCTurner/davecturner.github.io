@@ -105,6 +105,10 @@ for earlier ones to be accepted:
 
 ![Pipelining]({{ "/assets/2017-08-28/08.png" | relative_url }})
 
+The overall effect is that the leader sends a stream of values (plus a small
+amount of metadata) to its followers, and the followers respond with a stream
+of acknowledgements.
+
 ### Commentary
 
 From implementation experience, I quite like this scheme.
