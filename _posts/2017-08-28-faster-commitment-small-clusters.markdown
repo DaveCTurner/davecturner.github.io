@@ -136,3 +136,13 @@ Note also that both `proposed` and `committed` messages generally carry the
 value of the proposal in question, whereas `accepted` messages do not. If
 values are large and the cluster is small then broadcasting `accepted` messages
 could be significantly cheaper than sending each value twice over the wire.
+
+One disadvantage is that if nodes must be able to recover following a crash
+(e.g. a power outage) then this scheme requires two durable writes in sequence:
+once before the leader sends its `proposed+accepted` message and a second
+before each follower responds with an `accepted` message. In contrast, if the
+leader's `proposed` and `accepted` messages are not combined then it can send
+the `proposed` message, then perform a durable write, and finally send its
+`accepted` message.  This issue is also present in [Viewstamped Replication
+(VR)](http://pmg.csail.mit.edu/papers/vr-revisited.pdf) and the discussion
+about it in VR is pertinent here too.
