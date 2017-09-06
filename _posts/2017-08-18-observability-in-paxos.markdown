@@ -13,7 +13,7 @@ other. In practice you want to know about unhealthy nodes or connectivity
 issues so they can be fixed before they lead to a total failure.
 
 Fortunately there are some fairly simple symptoms that can be used to detect
-all sorts of hidden problems.
+and act on all sorts of hidden problems.
 
 ### Health
 
@@ -119,6 +119,27 @@ requests.  It occasionally becomes an incumbent, but never a candidate.
 
 It has turned out to be worthwhile and simple to record, in detail, all
 activity that is not on these paths. The resulting logs are empty when the
-system is operating normally, but contain very detailed information whenever
+cluster is completely healthy, but contain very detailed information whenever
 something unexpected happens.
 
+### Observability
+
+_Observability_ is about measuring the state of your system and using these
+measurements to take further action.
+
+If the cluster is completely healthy and all the latency measurements seem
+reasonable then all is well in the world. If the cluster is
+healthy-but-not-completely then it's still working from the clients'
+perspectives but there's an elevated risk of failure. Nodes that become
+candidates, even temporarily, warrant further investigation. The logs of
+activity off the usual paths will show if it's a problem with the node itself
+or its connectivity.
+
+If the cluster is critically unhealthy then immediate action may be required to
+restore service. Unusual-activity logs and other monitoring can determine
+whether the cluster is down because of lost connectivity or because of the
+failure of too many nodes. If the former, fix the connectivity to restore
+service. If the latter, there is a risk that some recently-acknowledged data
+has been lost, but accepting this risk it is sometimes possible to restore a
+cluster from any remaining nodes. In the worst case, the cluster should be
+completely terminated and then started from scratch on a set of healthy nodes.
