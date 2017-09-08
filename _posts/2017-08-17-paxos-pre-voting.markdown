@@ -21,7 +21,7 @@ bearing on liveness.
 [Presentations of
 Paxos](http://lamport.azurewebsites.net/pubs/lamport-paxos.pdf) often show its
 liveness property by assuming the existence of a distinguished leader which is
-elected by some unspecified process. Raft has no need for a separate
+elected by some unspecified external process. Raft has no need for a separate
 leader-election process as it has a built-in system of timeouts instead, which
 is much cuter.  Ongaro's thesis does not show that Raft satisfies any
 particular liveness properties, but it certainly seems plausible that it works.
@@ -64,13 +64,13 @@ implemented based on the node's local clock and there is no need to share time
 values between nodes, so there is no need for any kind of clock synchronisation
 in this setup.
 
-It is hopefully reasonably obvious in this setup that eventually either there
+It is hopefully reasonably obvious from this that eventually either there
 exists a node that has learned the next value or else all nodes have become
 candidates.
 
 When a candidate times out it remains a candidate but also attempts to make
 progress (i.e. to learn that a later value is chosen) as follows. Firstly, it
-broadcasts a `seek-votes` message including the latest value it learned. The
+broadcasts a `seek-votes` message indicating the latest value it learned. The
 recipients of this message may do one of three things:
 
 * If the recipient knows that a later value has been chosen then it responds
@@ -85,7 +85,7 @@ If a candidate receives an `offer-catch-up` message it communicates directly
 with the sender in order to learn the missing values. If instead it receives
 `offer-vote` messages from a quorum of its peers then it sends out a `prepare`
 message using a term that is no less than any of the terms received in the
-`offer-vote` messages.
+`offer-vote` messages, and runs the usual protocol from there on.
 
 ### Quiescence
 
@@ -128,12 +128,12 @@ three round-trips.
 **Sketch Theorem** Such a candidate, if connected to a quorum of peers, makes
 progress.
 
-_Sketch Proof._ Let _n_ such a well-connected candidate. As noted above, its
-peers are eventually either all candidates or else contain a node which has
-learned some later values. Also, eventually-almost-certainly, it is the only
-active node. It broadcasts its `seek-votes` message and receives responses from
-its peers. Being well-connected, it has a quorum of peers, so it either
-receives an `offer-catch-up` message or a quorum of `offer-vote` messages.
+_Sketch Proof._ Let _n_ such a candidate. As noted above, its peers are
+eventually either all candidates or else contain a node which has learned some
+later values. Also, eventually-almost-certainly, it is the only active node. It
+broadcasts its `seek-votes` message and receives responses from its peers.  It
+is connected to a quorum of peers, so it either receives an `offer-catch-up`
+message or a quorum of `offer-vote` messages.
 
 In the former case it learns some later chosen values from the sender. In the
 latter case it sends out a `prepare` message to start phase 1 of the usual
@@ -151,14 +151,14 @@ must propose one of their values according to the rules of the Paxos algorithm.
 Again since _n_ is the only active node then no other `promised` messages will
 have been sent before its peers receive the `proposed` message, so the proposal
 will result in a quorum of `accepted` messages which results in the proposed
-value being chosen as required. QED.
+value being chosen and learned as required. QED.
 
 ### Unboundedly large messages
 
 The time it takes to send and receive a message is a function of its size, so
 it is only safe to assume that the round-trip time is bounded if messages have
 bounded size. In practice if a message is too large then nodes time-out before
-it is fully delivered. This can lead to a leadership election, and also breaks
+it is fully delivered, which can lead to a leadership election, and also breaks
 the liveness proof above: if `promised` messages may then arbitrarily long to
 deliver then there may never be a time when there is a unique active node and
 therefore no election may ever succeed. It's a good idea to limit the size of
@@ -182,11 +182,11 @@ of clusters running in a shared environment then it may make sense to try and
 distribute the leaders as evenly as possible across the environment.
 
 A leader abdicates simply by sending a `prepare` message for a term owned by
-the new leader that is larger than the current term. All nodes respond with a
-`promised` message sent _to the owner of the term_ and not to the original
+the new leader that is larger than the current term. Nodes should respond with
+a `promised` message sent _to the owner of the term_ and not to the original
 sender, and from there the usual Paxos message flow leads to the new leader
 owning the term of the next value to be chosen and therefore being recognised
-as leader.
+as the cluster leader.
 
 ### Alternatives
 
@@ -201,15 +201,15 @@ Another strategy that implementations sometimes use is to consider the leader
 to have failed if a value has not been chosen for a period, and to immediately
 send out a `prepare` message after this timeout expires. Raft (without its
 `PreVote` phase) uses this kind of strategy.  The main challenge with this
-approach seems the selection of an appropriate term to put in the `prepare`
-message, which often seems to boil down to a term that is slightly higher than
-the greatest term seen so far in any received message. In practice this seems
-to work ok although it does seem to suffer from (temporary) livelocks more. In
+approach seems to be the selection of an appropriate term to put in the
+`prepare` message: it's common to choose a term that is slightly higher than
+the greatest term seen so far in any known message. In practice this seems to
+work ok although it does seem to suffer from (temporary) livelocks more. In
 theory it's a bit problematic: my attempted proofs that this works always
-seemed to get stuck on the fact that it allows for some of the nodes not to
-select a sufficiently-large term and therefore to fail to be elected, and it's
-not at all obvious to show that there eventually is a node that manages to be
-elected.
+seemed to get stuck on the fact that there's no guarantee that the selected
+term is large enough, so any particular node may fail to be elected when it
+times out. It's not at all obvious that always there is eventually a node that
+selects a high-enough term.
 
 It was these failed proofs that led me to the idea of the `seek-votes` message
 and `offer-vote` responses to determine an appropriate term for the subsequent
@@ -221,7 +221,7 @@ As in Raft, this extra phase prevents nodes from triggering a new leader
 election when they reconnect: out-of-date nodes receive a `offer-catch-up`
 message before they have received a quorum of `offer-vote` messages. This means
 that the leader tends to be stable for as long as it remains connected to a
-quorum of its peers, and an other node may only send a `prepare` message once
+quorum of its peers, and other nodes may only send a `prepare` message once
 there is a quorum of nodes that believe the leader to have failed.
 
 After a reconnection the system can get itself into a subtle and rare state in
@@ -229,13 +229,13 @@ which it's still making progress, but some minority of nodes have entered a
 later term than the one in which the majority is working. This means that this
 minority can't accept any proposals from the leader, but nor can they gather
 enough `offer-vote` messages to trigger a leader election in a later term.
-Instead, they continually receive `offer-catch-up` messages and perform
-catch-ups. This is not much of a problem as the situation will resolve itself
-at the next election, but elections should be relatively uncommon so the
-situation could last for many days. It's also operationally irritating: if it
-weren't for this state then you could consider candidate nodes to be indicative
-of [problems in the cluster for monitoring purposes]({% post_url
-2017-08-18-observability-in-paxos %}).
+Instead, they continually receive `offer-catch-up` messages and learn new
+values through the catch-up process. This may not be too much of a problem, and
+the situation will resolve itself at the next election, but elections should be
+relatively uncommon so the situation could last for many days. It's also
+operationally irritating: if it weren't for this state then you could consider
+candidate nodes to be indicative of [problems in the cluster for monitoring
+purposes]({% post_url 2017-08-18-observability-in-paxos %}).
 
 The fix is to include the candidate's current term in its `seek-votes` message,
 and if a leader receives a `seek-votes` message containing a later term then it

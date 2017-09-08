@@ -7,10 +7,11 @@ date:   2017-08-18 20:03:17 +0000
 The trouble with fault-tolerant systems is that they tolerate faults: by design
 they can appear to be working normally despite some underlying problem.
 
-Consensus algorithms such as Paxos are designed to keep working as long as more
-than half of the nodes in the cluster are healthy and communicating with each
-other. In practice you want to know about unhealthy nodes or connectivity
-issues so they can be fixed before they lead to a total failure.
+Majority-based consensus algorithms such as Paxos are designed to keep working
+as long as more than half of the nodes in the cluster are healthy and
+communicating with each other, but in practice you want to know about unhealthy
+nodes or connectivity issues so they can be fixed before they lead to a total
+failure.
 
 Fortunately there are some fairly simple symptoms that can be used to detect
 and act on all sorts of hidden problems.
@@ -78,11 +79,11 @@ latency at an otherwise healthy-looking node can be a strong leading indicator
 of impending doom, such as the system getting too close to at some kind of
 throughout limit.
 
-Since Paxos is a majority-based system, the latency presented to clients is
-related to the _median_ latency of the individual nodes, which can hide the
-fact that a minority of nodes are struggling. The trouble is that if just one
-of the healthy nodes goes offline then the median latency can shift
-dramatically, triggering a cascading failure.
+In a majority-based system, the latency presented to clients is related to the
+_median_ latency of the individual nodes, which can hide the fact that a
+minority of nodes are struggling. The trouble is that if just one of the
+healthy nodes goes offline then the median latency can shift dramatically,
+possibly triggering a cascading failure.
 
 This means it's a good idea to keep track of the response latencies of all the
 nodes as well as the client-facing (i.e. median) latency, to catch any problems
@@ -140,6 +141,6 @@ restore service. Unusual-activity logs and other monitoring can determine
 whether the cluster is down because of lost connectivity or because of the
 failure of too many nodes. If the former, fix the connectivity to restore
 service. If the latter, there is a risk that some recently-acknowledged data
-has been lost, but accepting this risk it is sometimes possible to restore a
-cluster from any remaining nodes. In the worst case, the cluster should be
-completely terminated and then started from scratch on a set of healthy nodes.
+has been lost, but (accepting this risk) it is sometimes possible to restore a
+cluster from any remaining nodes. The last resort is for the cluster to be
+completely terminated and then started from backups on a set of healthy nodes.
