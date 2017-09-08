@@ -51,6 +51,22 @@ table.weights-table {
   }
 }
 
+table.results-table {
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  font-size: 80%;
+
+  td {
+    min-width: 60px;
+    text-align: center;
+    padding: 0px 8px;
+  }
+
+  thead > tr {
+    border-bottom: 1px solid #c0c0c0;
+  }
+}
+
 table.message-types-table {
   border-collapse: collapse;
   margin-bottom: 10px;
