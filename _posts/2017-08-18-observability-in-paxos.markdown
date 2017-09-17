@@ -72,6 +72,15 @@ It's also turned out to be useful to enter a warning state if any peer was
 recently in a warning state (for reasons other than this one) as this
 propagates warnings across the whole cluster.
 
+### Configuration
+
+Health, as described above, focusses on failures affecting a single node, but
+there are some failure modes that may affect more than one node in the cluster.
+For example, in a three-node cluster it may happen that two of the nodes share
+a power supply or other vital infrastructure. It is worth checking that the
+system's configuration is not exposed to this sort of multi-node failure mode,
+and notifying operators to reconfigure it if such a risk is identified.
+
 ### Latency
 
 Another latent fault to watch out for is to do with (hoho) latency. High
