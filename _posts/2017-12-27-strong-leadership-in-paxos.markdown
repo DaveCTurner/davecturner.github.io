@@ -51,7 +51,7 @@ be able to see that there is _some_ node that has a local last-accepted state
 that's no more stale than that of its peers, and it is a node like this that
 must end up as master.
 
-One nice property of my favourite [liveness argument]({% post_url
+One nice property of my favourite [liveness mechanism]({% post_url
 2017-08-17-paxos-pre-voting %}) is that in the absence of progress all nodes
 eventually become candidates, at which point if _any_ of them wakes up and
 starts a pre-voting phase then this results in a successful election and at
