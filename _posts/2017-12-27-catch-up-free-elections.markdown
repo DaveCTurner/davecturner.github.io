@@ -34,7 +34,7 @@ A possible problem with this greedy catch-up mechanism is that the number of
 catch-ups before convergence is at-most-quadratic in the number of nodes in the
 cluster. A committed state may have a large representation on-the-wire, meaning
 that catch-up is quite a costly mechanism, so a quadratic bound is something to
-avoid.
+try and avoid if possible.
 
 My colleagues in the distributed systems team at [Elastic](http://elastic.co)
 pushed for an alternative approach in which catch-up was deferred until the

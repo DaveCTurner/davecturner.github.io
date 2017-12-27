@@ -94,7 +94,7 @@ the transition at midnight on `1867-10-21`, although the account describes the
 second Sunday as "our Monday" so perhaps they didn't change their calendar even
 then. Changing everywhere at local midnight would give a nondecreasing date
 truncation function again, but would mean that different locations in Alaska
-would change at different times since local time is solar time.
+would change at different times since local time was solar time back then.
 
 Communication in Alaska at that time was pretty poor, so it seems likely that
 anyone outside of Sikta was unaware of the transition for quite a while yet.
