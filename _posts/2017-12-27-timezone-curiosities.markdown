@@ -12,9 +12,9 @@ because it's not really clear what the correct behaviour is here, but there's
 definitely a discrepancy between the assumptions recorded in the test suite and
 the behaviour of the production code.
 
-The discrepancy only manifests in Newfoundland (specifically, the
-`America/St_Johns` IANA timezone) and only for 59 minutes of each of the years
-from 1987 to 2010 inclusive.
+The discrepancy <s>only</s> [(correction)](#correction) manifests in
+Newfoundland (specifically, the `America/St_Johns` IANA timezone) and only for
+59 minutes of each of the years from 1987 to 2010 inclusive.
 
 The assumption that we were incorrectly making was, roughly, that the act of
 extracting the date from a local time is a nondecreasing function. This is
@@ -117,3 +117,29 @@ changed sides _because of_ the effect on their calendar. The change, in the
 opposite direction from Alaska in 1867, took place at local midnight, skipping
 over Friday `2011-12-30` entirely. The date truncation function _is_
 nondecreasing here, but this is a nice source of other counterexamples.
+
+## Correction
+
+_Addendum 2018-01-04_. I was interested in how rare a failure this is so I went
+through the IANA database (version 2017c) looking for similar situations of
+overlapping days.  The only regular ones since 1950 are the clocks going back
+in `America/St_Johns` (Newfoundland, 1987-2010), `America/Goose_Bay` (Labrador,
+1987-2010) and `America/Moncton` (New Brunswick, 1993-2006) as described above.
+As a further bonus, in `America/St_Johns` in 1988 the clocks actually went back
+2 hours at `00:01`.  Eastern Canada is a special place indeed.
+
+There was also a one-off shift in `Antarctica/Casey` by three hours from
+`UTC+11` to `UTC+8` at `2010-03-05 02:00` local time which took it back to
+`2010-03-04` for an extra hour.
+
+Prior to 1950 there's a bunch more examples of overlapping days, mostly with
+strange offsets due to the more common use of solar time in that era.  One
+doozy that particularly stands out is the case of `America/Phoenix` who
+apparently set the clocks back by an hour at `1944-01-01 00:01`, causing an
+overlap between the _years_ of 1943 and 1944. I'm not sure this actually
+happened, because [the quoted source for this
+information](https://web.archive.org/web/20030827033848/http://www.dlapr.lib.az.us:80/links/daylight.htm)
+doesn't give a specific time, and the clocks have generally gone back at
+`02:00` in the USA for as long as daylight saving time has existed, but it's
+something you'll need to handle if you are using the IANA database as your
+source of truth.
