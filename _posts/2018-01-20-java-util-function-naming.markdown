@@ -18,7 +18,7 @@ it's not totally clear to me, and there's a couple of exceptions that break the
 uniformity, so this is a note-to-self about the naming convention for future
 reference.
 
-## Reference Types
+## Reference types
 
 It's simplest to start with functions that take and return instances of
 reference types, as this sets up most of the basic pattern:
