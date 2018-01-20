@@ -96,3 +96,13 @@ div.table-spacer {
     margin-right: 20px;
   }
 }
+
+table.java-type-table {
+  padding-bottom: 10px;
+  code {
+    font-size: 60%;
+    padding: 0px;
+    border: none;
+    background-color: transparent;
+  }
+}
