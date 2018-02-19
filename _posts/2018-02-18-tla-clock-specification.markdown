@@ -4,7 +4,7 @@ title:  "Refining specifications in TLA+ and Isabelle/HOL"
 date:   2018-02-18 19:09:09 +0000
 ---
 
-One of the great features of TLA+ is it's ability to formally express that one
+One of the great features of TLA+ is its ability to formally express that one
 specification refines another. Here is an [example of a pair of specifications,
 one of which refines the other, along with a proof of this fact in
 Isabelle/HOL](https://gist.github.com/DaveCTurner/96c0857869d9768920d7999f91f5bb3d).
