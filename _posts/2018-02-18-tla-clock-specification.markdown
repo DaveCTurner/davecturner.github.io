@@ -19,8 +19,8 @@ then steps back down to 1 and carries on. I'm following the example from
 TLA+_](https://members.loria.fr/SMerz/talks/argentina2005/handout.pdf) except
 modelling a 12-hour clock instead of a 24-hour one.
 
-After some initial lemmas (which I'll probably collect into a library at some point)
-we introduce the specification of an `HourClock`:
+After some initial lemmas (which I'll probably collect into a library at some
+point) we introduce the specification of an `HourClock`:
 
     definition next_hour :: "nat ⇒ nat" where "⋀n. next_hour n ≡ if n = 12 then 1 else n+1"
 
@@ -37,10 +37,11 @@ we introduce the specification of an `HourClock`:
     context HourClock
     begin
 
-In contrast to the previous article, here I'm using an Isabelle _locale_ to limit
-the scope of these definitions. The clock starts out displaying an arbitrary hour
-(from 1 to 12) and at each step the hour is updated using the `next_hour` function, setting
-it back to 1 if it hits 12 and incrementing it otherwise.
+In contrast to [the previous article]({% post_url 2018-02-12-tla-in-isabelle
+%}), here I'm using an Isabelle _locale_ to limit the scope of these
+definitions. The clock starts out displaying an arbitrary hour (from 1 to 12)
+and at each step the hour is updated using the `next_hour` function, setting it
+back to 1 if it hits 12 and incrementing it otherwise.
 
 The safety property for the `HourClock` is a relatively simple type-correctness
 property which just says that it only ever displays numbers from 1 to 12, which
@@ -56,9 +57,10 @@ always eventually updates the hour:
       assumes n: "n ∈ {1..12}"
       shows "⊢ HC ⟶ (hr = #n ↝ hr = #(next_hour n))"
 
-The proof of this uses lemma `WF1`, mentioned last time. From this lemma it's
-possible to show that the hour always eventually increases from any number to
-any greater number (up to 12).
+The proof of this uses lemma `WF1`, [mentioned last time]({% post_url
+2018-02-12-tla-in-isabelle %}). From this lemma it's possible to show
+that the hour always eventually increases from any number to any greater number
+(up to 12).
 
     lemma HC_liveness_progress_forwards:
       assumes m: "m ∈ {1..12}"
