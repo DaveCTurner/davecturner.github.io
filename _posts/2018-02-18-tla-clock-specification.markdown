@@ -4,6 +4,19 @@ title:  "Refining specifications in TLA+ and Isabelle/HOL"
 date:   2018-02-18 19:09:09 +0000
 ---
 
+This is the second post in an open-ended series on proving the correctness of
+TLA specifications using Isabelle/HOL:
+
+- [TLA+ in Isabelle/HOL]({% post_url 2018-02-12-tla-in-isabelle %})
+
+- **Refining specifications in TLA+ and Isabelle/HOL**
+
+- [Using TLA's induction rule]({% post_url 2018-03-23-tla-resource-allocator
+  %})
+
+- [Fairness properties in refinement proofs]({% post_url
+  2018-03-24-tla-resource-scheduler %})
+
 One of the great features of TLA+ is its ability to formally express that one
 specification refines another. Here is an [example of a pair of specifications,
 one of which refines the other, along with a proof of this fact in

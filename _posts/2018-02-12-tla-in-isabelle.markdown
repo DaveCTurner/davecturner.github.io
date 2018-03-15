@@ -12,6 +12,20 @@ slightly tidied-up version of some notes about my early experiences of playing
 with the implementation of TLA within Isabelle/HOL, to record a handful of
 obstacles I hit and some techniques I found useful.
 
+_Addendum:_ this post has grown into a series of posts, which continues to
+expand:
+
+- **TLA+ in Isabelle/HOL**
+
+- [Refining specifications in TLA+ and Isabelle/HOL]({% post_url
+  2018-02-18-tla-clock-specification %})
+
+- [Using TLA's induction rule]({% post_url 2018-03-23-tla-resource-allocator
+  %})
+
+- [Fairness properties in refinement proofs]({% post_url
+  2018-03-24-tla-resource-scheduler %})
+
 ## Introduction
 
 TLA is a simple linear-temporal logic that is expressive enough to describe the
