@@ -2,7 +2,7 @@ title: David Turner says...
 author: ""
 baseurl: "/"
 url: "https://davecturner.github.io"
-twitter_username: "@DaveCTurner"
+twitter_username: "DaveCTurner"
 
 markdown: kramdown
 theme: minima
