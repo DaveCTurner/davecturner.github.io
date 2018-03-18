@@ -52,7 +52,8 @@ implausible close to the poles where population is sparse and solar time is
 vague:
 [`Antarctica/DumontDUrville`](https://en.wikipedia.org/wiki/Dumont_d'Urville_Station)
 apparently set the clocks forward by 10 hours on 1 November 1956 which isn't
-far off 12 hours. However that's the largest shift in the database so far,
+far off the 12 hours that we need to exceed. However that's the largest shift
+in the database so far,
 meaning that there's (currently) no way of mucking around with timezones that
 provides a counterexample.
 
