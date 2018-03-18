@@ -61,7 +61,8 @@ rare example of a plausible statement about time that's actually true? No, of
 course not. All plausible statements about time
 [are](http://infiniteundo.com/post/25326999628/falsehoods-programmers-believe-about-time)
 [wrong](http://infiniteundo.com/post/25509354022/more-falsehoods-programmers-believe-about-time).
-This one is wrong because during a leap second a digital clock (UTC timezone,
-12-hour mode) should display `11:59:60`. If it got stuck with this on its
-display then it's a stopped clock (it's displaying a valid time) which is right
-much less frequently than once per day.
+This one is wrong because during a [leap
+second](https://en.wikipedia.org/wiki/Leap_second) a digital clock (UTC
+timezone, 12-hour mode) should display `11:59:60`. If it got stuck with this on
+its display then it's a stopped clock (it's displaying a valid time) which is
+right much less frequently than once per day.
