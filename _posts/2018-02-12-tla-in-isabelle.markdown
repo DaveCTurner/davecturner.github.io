@@ -26,6 +26,9 @@ expand:
 - [Fairness properties in refinement proofs]({% post_url
   2018-03-24-tla-resource-scheduler %})
 
+- [Floyd's loop-finding algorithm]({% post_url
+  2018-04-11-tortoise-and-hare %})
+
 ## Introduction
 
 TLA is a simple linear-temporal logic that is expressive enough to describe the

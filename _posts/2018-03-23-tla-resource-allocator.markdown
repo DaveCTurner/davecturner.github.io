@@ -17,6 +17,9 @@ TLA specifications using Isabelle/HOL:
 - [Fairness properties in refinement proofs]({% post_url
   2018-03-24-tla-resource-scheduler %})
 
+- [Floyd's loop-finding algorithm]({% post_url
+  2018-04-11-tortoise-and-hare %})
+
 Stephan Merz's article [_The Specification Language
 TLA+_](https://members.loria.fr/SMerz/papers/tla+logic2008.pdf) has a running
 example of a resource allocator, which manages a set of clients each requesting

@@ -17,6 +17,9 @@ TLA specifications using Isabelle/HOL:
 
 - **Fairness properties in refinement proofs**
 
+- [Floyd's loop-finding algorithm]({% post_url
+  2018-04-11-tortoise-and-hare %})
+
 As discussed [last time]({% post_url 2018-03-23-tla-resource-allocator %}),
 Stephan Merz's article [_The Specification Language
 TLA+_](https://members.loria.fr/SMerz/papers/tla+logic2008.pdf) has a running

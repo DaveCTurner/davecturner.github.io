@@ -17,6 +17,9 @@ TLA specifications using Isabelle/HOL:
 - [Fairness properties in refinement proofs]({% post_url
   2018-03-24-tla-resource-scheduler %})
 
+- [Floyd's loop-finding algorithm]({% post_url
+  2018-04-11-tortoise-and-hare %})
+
 One of the great features of TLA+ is its ability to formally express that one
 specification refines another. Here is an [example of a pair of specifications,
 one of which refines the other, along with a proof of this fact in
