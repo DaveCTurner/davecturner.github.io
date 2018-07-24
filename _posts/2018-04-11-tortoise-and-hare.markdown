@@ -20,6 +20,9 @@ TLA specifications using Isabelle/HOL:
 
 - **Floyd's loop-finding algorithm**
 
+- [Uncrossing lines]({% post_url
+  2018-07-24-uncrossing-lines %})
+
 ## Floyd's loop-finding algorithm
 
 This post is about [Floyd's tortoise-and-hare

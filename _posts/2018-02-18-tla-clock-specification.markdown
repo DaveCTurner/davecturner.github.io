@@ -20,6 +20,9 @@ TLA specifications using Isabelle/HOL:
 - [Floyd's loop-finding algorithm]({% post_url
   2018-04-11-tortoise-and-hare %})
 
+- [Uncrossing lines]({% post_url
+  2018-07-24-uncrossing-lines %})
+
 One of the great features of TLA+ is its ability to formally express that one
 specification refines another. Here is an [example of a pair of specifications,
 one of which refines the other, along with a proof of this fact in

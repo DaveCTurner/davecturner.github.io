@@ -20,6 +20,9 @@ TLA specifications using Isabelle/HOL:
 - [Floyd's loop-finding algorithm]({% post_url
   2018-04-11-tortoise-and-hare %})
 
+- [Uncrossing lines]({% post_url
+  2018-07-24-uncrossing-lines %})
+
 Stephan Merz's article [_The Specification Language
 TLA+_](https://members.loria.fr/SMerz/papers/tla+logic2008.pdf) has a running
 example of a resource allocator, which manages a set of clients each requesting

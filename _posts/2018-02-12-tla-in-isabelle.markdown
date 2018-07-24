@@ -29,6 +29,9 @@ expand:
 - [Floyd's loop-finding algorithm]({% post_url
   2018-04-11-tortoise-and-hare %})
 
+- [Uncrossing lines]({% post_url
+  2018-07-24-uncrossing-lines %})
+
 ## Introduction
 
 TLA is a simple linear-temporal logic that is expressive enough to describe the
