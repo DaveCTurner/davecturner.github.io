@@ -232,6 +232,10 @@ days overlap in terms of their local times:
 
 ![Overlapping days]({{ "/assets/2018-08-timezone-diagrams/20-overlapping-days.png" | relative_url }})
 
+The opposite can occur if the clocks are set forwards just before midnight too:
+
+![Missing midnights]({{ "/assets/2018-08-timezone-diagrams/21-no-midnight.png" | relative_url }})
+
 In applications where there are other special local times, e.g. when trying to
 round a time to the nearest hour, beware of similar effects. Where offsets
 change by an amount that isn't a whole multiple of an hour, you need to decide
