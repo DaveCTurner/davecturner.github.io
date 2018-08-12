@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Working with timezones"
-date:   2018-08-09 09:09:09 +0000
+date:   2018-08-12 09:09:09 +0000
 ---
 
 I do enjoy thinking about some of the strange things that can happen with
