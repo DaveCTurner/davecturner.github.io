@@ -648,3 +648,31 @@ main = do
       drawBeforeTransition (-90) (-100)
       drawAfterTransition  (-90) 0
       drawAxes
+
+    drawDiagram "../../assets/2018-08-timezone-diagrams/21-no-midnight.png" 400 250 0 $ do
+      drawGrid 25
+
+      ((xMin, _), _, (xMax, _)) <- getBounds
+      (_,y) <- coordsFromOffset 0 0
+      liftRender $ do
+        setLineWidth timeLineWidth
+        setSourceRGB 0.7 0.7 0.7
+        setDash [5,5] 0
+        moveTo xMin y
+        lineTo xMax y
+        stroke
+
+      liftRender $ do
+        pangoLayout <- createLayout "00:00"
+        liftIO $ do
+          fontDescription <- fontDescriptionFromString "Sans 8"
+          layoutSetFontDescription pangoLayout $ Just fontDescription
+        PangoRectangle x0 y0 x1 y1 <- liftIO $ fst <$> layoutGetExtents pangoLayout
+        moveTo (xMin + 2) (y - 6 - (y1 - y0))
+        showLayout pangoLayout
+
+      drawBeforeTransition 0 50
+      drawAfterTransition 0 (-50)
+
+      drawAxes
+
