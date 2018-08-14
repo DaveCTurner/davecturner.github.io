@@ -136,7 +136,7 @@ There are other things to remember when thinking about when transitions happen:
 
 - the southern hemisphere starts each year in summertime, so the
   forwards/backwards shifts of their clocks is the other way round from
-countries in the northern hemisphere
+timezones in the northern hemisphere
 
 - timezones near to the equator may not shift their clocks at all
 
@@ -250,8 +250,36 @@ way or another, so a UTC-to-local diagram is appropriate. If the difference was
 important then it'd be fine to draw this kind of diagram with TAI on the
 horizontal axis instead of UTC.
 
+## Choosing a timezone
+
+(addendum 2018-08-13) Redditor
+[/u/dbxp](https://www.reddit.com/r/programming/comments/96qhjo/working_with_timezones/e43xt4u)
+points out that I omitted to talk about how to choose the appropriate timezone
+for any given calculation, and gives the example of Jerusalem in which the
+choice of timezone depends on more than just geography. A similar example to
+this is that of the [Mount Washington
+Observatory](https://github.com/eggert/tz/blob/5c005615f3f8beaa3eaf4a67ab9c87dc702e1781/northamerica#L296-L300)
+which apparently keeps to
+[`Etc/GMT+5`](https://en.wikipedia.org/wiki/UTC-05:00) even though
+geographically it should be in `America/New_York`.
+
+The choice of timezone is a human activity, so the only reliable way to choose
+a timezone is to expose the choice directly to a human being. Guessing it based
+on other factors is likely to fail for some of your users.
+
+Additionally, using a proper timezone name in the UI for this is much better
+than trying to abbreviate it cleverly. It's hard to trust a UI that describes
+the UK timezone as `GMT`, which suggests that it doesn't correct for daylight
+saving. [It'd be nice if Microsoft didn't do
+this](https://support.microsoft.com/en-gb/help/973627/microsoft-time-zone-index-values):
+
+> (GMT) Greenwich Mean Time: Dublin, Edinburgh, Lisbon, London
+
+😭
+
 ## Conclusion
 
 A graph showing local time against universal time is a useful thing to draw if
 you have to work on some timezone-sensitive system and need help visualising
-all the things that might occur.
+all the things that might occur. With the right pictures, it's much easier to
+get things right.
