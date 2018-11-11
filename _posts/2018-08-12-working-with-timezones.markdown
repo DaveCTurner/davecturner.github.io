@@ -157,12 +157,17 @@ also that the transition rules are set by a political process, so can change
 (sometimes at [very short
 notice](https://codeofmatt.com/2016/04/23/on-the-timing-of-time-zone-changes/)),
 which means you have to update your timezone database as new decisions are
-made. All future entries in the timezone database are subject to change, and
-this means it's wrong to convert all date-time values in your system into UTC
-for storage: human activities like meetings (and legal activities like
+made.
+
+### Future transitions
+
+Future entries in the timezone transition database are predictions &mdash;
+educated guesses based on a pattern of past behaviour &mdash; and subject to
+revision. This means it's wrong to blindly convert all date-time values in your
+system into UTC for storage: human events like meetings (and legal events like
 deadlines) are normally given in local time, and you cannot know for certain
-whether a future event's UTC offset will change, so prematurely converting
-these values to UTC does not work.
+the UTC offset that will be in force at the time of a future event, so
+prematurely converting future local times to UTC does not work.
 
 ## Transitions in linked timezones
 
