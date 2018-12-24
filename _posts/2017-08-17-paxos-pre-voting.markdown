@@ -159,10 +159,14 @@ The time it takes to send and receive a message is a function of its size, so
 it is only safe to assume that the round-trip time is bounded if messages have
 bounded size. In practice if a message is too large then nodes time-out before
 it is fully delivered, which can lead to a leadership election, and also breaks
-the liveness proof above: if `promised` messages may then arbitrarily long to
+the liveness proof above: if `promised` messages may take arbitrarily long to
 deliver then there may never be a time when there is a unique active node and
 therefore no election may ever succeed. It's a good idea to limit the size of
 values and to set any timeout limits accordingly.
+
+Alternatively, one could split up `promised` and `proposed` messages into
+chunks of bounded size and reset the timeout timer each time a chunk is
+received.
 
 ### Abdication
 
