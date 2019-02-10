@@ -288,7 +288,7 @@ impossible.
 The analysis above suggests the following setup for modelling the algorithm
 itself:
 
-    locale PairingSetup =
+    locale UncrossingSetup =
       fixes redPoints bluePoints :: "point set"
       assumes finite_redPoints:  "finite redPoints"
       assumes finite_bluePoints: "finite bluePoints"
@@ -314,7 +314,7 @@ red points and vice versa:
 In this setup, _any_ uncrossing reduces the total length of the line segments
 involved:
 
-    context PairingSetup
+    context UncrossingSetup
     begin
 
     lemma uncross_reduces_length:
@@ -448,7 +448,7 @@ massively in the analysis of the problematic situations involving collinear
 points. For these situations it was very useful to work in Isabelle as there
 were a few places where I had to proceed by enumerating cases and it's all to
 easy to miss one case when working by hand, especially when working with
-geometry and doubly so when trying to consider degenerate cases.The proof of
+geometry and doubly so when trying to consider degenerate cases. The proof of
 `swap_decreases_length` in particular involved nested case splits that would
 have been tricky to cover exhaustively by hand.
 
