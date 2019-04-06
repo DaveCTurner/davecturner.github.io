@@ -252,7 +252,7 @@ hour long, since you can't do both.
 
 ## Leap seconds
 
-These diagrams treat universal time (UTC) as if it elapses at a constant rate.
+These diagrams treat universal time (UTC) as if it advances at a constant rate.
 In fact this isn't true, it's
 [TAI](https://en.wikipedia.org/wiki/International_Atomic_Time) that advances at
 a fixed rate, and UTC differs from TAI by a whole number of seconds that
