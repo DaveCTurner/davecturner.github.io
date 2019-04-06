@@ -163,11 +163,14 @@ made.
 
 Future entries in the timezone transition database are predictions &mdash;
 educated guesses based on a pattern of past behaviour &mdash; and subject to
-revision. This means it's wrong to blindly convert all date-time values in your
-system into UTC for storage: human events like meetings (and legal events like
-deadlines) are normally given in local time, and you cannot know for certain
-the UTC offset that will be in force at the time of a future event, so
-prematurely converting future local times to UTC does not work.
+revision. This means it's [wrong to blindly convert all date-time values in
+your system into UTC for
+storage](http://www.creativedeletion.com/2015/03/19/persisting_future_datetimes.html):
+human events like meetings (and legal events like deadlines) are normally given
+in local time, and you cannot know for certain the UTC offset that will be in
+force at the time of a future event, so [prematurely converting future local
+times to UTC does not
+work](https://codeblog.jonskeet.uk/2019/03/27/storing-utc-is-not-a-silver-bullet/).
 
 ## Transitions in linked timezones
 
