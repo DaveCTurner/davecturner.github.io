@@ -4,13 +4,14 @@ title:  "Bisection in DCVSs"
 date:   2016-01-31 19:09:09 +0000
 ---
 
-[Bisection](https://git-scm.com/docs/git-bisect) is a mightily powerful tool
-for debugging issues that were quietly introduced into a codebase and not
-noticed for an extended period of time. With a fine-grained linear history I
-have found it often to be possible to quickly bisect to the single-line change
-that causes an issue, even amongst tens of thousands of commits spanning many
-years from a shifting team of developers, armed only with a reproducible test
-case.
+[Bisection](https://git-scm.com/docs/git-bisect) is a mightily effective
+technique for debugging those tricky issues that were quietly introduced into a
+codebase and not noticed for an extended period of time. With a fine-grained
+linear history I have found it often to be possible to quickly bisect to the
+single-line change that caused an issue, even amongst tens of thousands of
+commits spanning many years from a shifting team of developers, armed only with
+a reproducible test case. If you're not using bisection then you're ignoring
+one of the most powerful tools in your development toolbox.
 
 ## Fine-grained commits
 
