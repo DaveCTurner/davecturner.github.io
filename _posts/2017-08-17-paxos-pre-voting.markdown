@@ -87,6 +87,20 @@ with the sender in order to learn the missing values. If instead it receives
 message using a term that is no less than any of the terms received in the
 `offer-vote` messages, and runs the usual protocol from there on.
 
+**Addendum 2020-05-24**: [simbo1905
+notes](https://simbo1905.blog/2020/05/23/one-more-frown-please-upaxos-quorum-overlaps/)
+that [some variants of Paxos]({{post_url
+2016-06-09-unbounded-pipelining-paxos}}) allow the quorums to differ between
+the phases of Paxos and/or allow the configuration of the cluster can be
+changed dynamically, and in such variants we need to be more precise about
+exactly which quorum we mean when collecting `offer-vote` messages. The node is
+trying to choose a value for the first unchosen instance, which requires it to
+run both phases of the protocol, so in fact it should wait for `offer-vote`
+messages from both a phase-I quorum _and_ a phase-II quorum in the
+configuration that corresponds with the first unchosen instance. If it cannot
+contact a quorum for both phases then there is little point in proceeding since
+it will not be able to make meaningful progress.
+
 ### Quiescence
 
 The protocol as described is _eventually quiescent_: absent any external
