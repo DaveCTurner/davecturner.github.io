@@ -89,8 +89,8 @@ message using a term that is no less than any of the terms received in the
 
 **Addendum 2020-05-24**: [simbo1905
 notes](https://simbo1905.blog/2020/05/23/one-more-frown-please-upaxos-quorum-overlaps/)
-that [some variants of Paxos]({{post_url
-2016-06-09-unbounded-pipelining-paxos}}) allow the quorums to differ between
+that [some variants of Paxos]({%post_url
+2016-06-09-unbounded-pipelining-paxos%}) allow the quorums to differ between
 the phases of Paxos and/or allow the configuration of the cluster can be
 changed dynamically, and in such variants we need to be more precise about
 exactly which quorum we mean when collecting `offer-vote` messages. The node is
