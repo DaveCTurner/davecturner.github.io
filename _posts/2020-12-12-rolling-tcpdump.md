@@ -88,12 +88,12 @@ aws s3 cp $1 s3://mybucket/captures/$HOSTNAME/$1
 rm -vf $1
 ```
 
-Note that `xargs` doesn't parallelise anything by default, so if the `done.sh`
-script can't keep up with the traffic then a backlog of compressed capture
-files might build up. Consider running these captures in their own filesystem
-to bound the disk space they can consume, or else adjust `done.sh` to simply
-delete the capture file with no additional processing if disk usage is building
-up.
+Invoking `xargs` like this will process the files in turn, with no parallelism,
+so if the `done.sh` script can't keep up with the traffic then a backlog of
+compressed capture files might build up. Consider running these captures in
+their own filesystem to bound the disk space they can consume, or else adjust
+`done.sh` to simply drop the given file with no additional processing if disk
+usage is building up.
 
 There's a couple of feedback gotchas here. Firstly, deleting the compressed
 file triggers `inotifywait` again, which is why compressed files are skipped by
