@@ -28,8 +28,8 @@ details including a (somewhat vague) description of how `tcpdump` names files
 when using these options. I will be using something like this:
 
 ```
-sudo tcpdump -G600 -C1000 -zgzip -wcapture-%s.pcap -i eth0 tcp port 12345 ...
-#                 adjust these bits according to taste ^^^^^^^^^^^^^^^^^^^^^^^
+sudo tcpdump -G600 -C1000 -zgzip -wcapture-%s.pcap -s128 -i eth0 tcp port 12345 ...
+#                      adjust these bits according to taste ^^^^^^^^^^^^^^^^^^^^^^^
 ```
 
 This says to roll over every 10 minutes, and every 1GB, and to run `gzip` to
@@ -101,3 +101,15 @@ the `/gz$/d` in the `sed` script. Secondly, if you're sending the captured
 traffic back out over the network then there's a risk that `tcpdump` will
 capture it all over again. Make sure you set up an appropriate filter in the
 original capture to avoid that.
+
+---
+
+**Addendum 2020-12-15**: An astute colleague pointed out that when we're doing
+these kinds of network trace then we typically only care about the packet
+headers, and therefore `-s128` is extremely effective at capturing what we need
+and dropping all the other junk in the payload. The headers compress pretty
+well too since there's lots of stuff that appears in every one, whereas the
+payload is typically encrypted and therefore practically uncompressible. Tools
+like [Wireshark](https://www.wireshark.org) correctly use the packet length
+reported in the header so they handle these truncated packets with no problems.
+I added that to the suggested `tcpdump` invocation above.
