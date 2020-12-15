@@ -23,10 +23,10 @@ Paxos](http://lamport.azurewebsites.net/pubs/lamport-paxos.pdf) often show its
 liveness property by assuming the existence of a distinguished leader which is
 elected by some unspecified external process. Raft has no need for a separate
 leader-election process as it has a built-in system of timeouts instead, which
-is much cuter.  Ongaro's thesis does not show that Raft satisfies any
-particular liveness properties, but it certainly seems plausible that it works.
-_[I am unaware of further work on Raft's liveness properties but [please get in
-touch](https://twitter.com/davecturner) if you know of some.]_
+is much cuter. Ongaro's thesis does not show that Raft satisfies any particular
+liveness properties, but it certainly seems plausible that it works.  _[I am
+unaware of much further literature on Raft's liveness properties but [please
+get in touch](https://twitter.com/davecturner) if you know of some.]_
 
 It's possible to run Paxos without an external leader-election process in much
 the same way that Raft works, and I found that a similar `PreVote` phase was
@@ -270,3 +270,16 @@ blog](https://simbo1905.blog/2017/08/22/pre-voting-in-distributed-consensus/)
 which gives some more intuitive coverage of the ideas in this article as well
 as some thoughts on how this mechanism relates to the one in
 [TRex](https://github.com/trex-paxos/trex).
+
+**Addendum 2020-12-15**
+
+By "Raft" in this post I mean the full protocol including the `PreVote` and
+`CheckQuorum` features. It [doesn't work without
+them](https://decentralizedthoughts.github.io/2020-12-12-raft-liveness-full-omission/),
+so it's a bit misleading to describe them as "extensions" or "optimisations".
+At least one major implementation of Raft [gets this wrong
+today](https://github.com/etcd-io/etcd/blob/a3174d0f8ec6ec58827d7d86448bb4df08ae69e4/raft/raft.go#L175-L182)
+and is [buggy by
+default](https://github.com/etcd-io/etcd/blob/28d1af294e4394df1ed967a4ac4fbaf437be3463/server/embed/config.go#L235-L236),
+with [predictably disastrous
+consequences](https://blog.cloudflare.com/a-byzantine-failure-in-the-real-world/).
