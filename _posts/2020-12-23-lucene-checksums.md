@@ -8,14 +8,15 @@ date:   2020-12-23
 impossible](http://lamport.azurewebsites.net/pubs/buridan.pdf), but we can get
 pretty close with layers of protection against something going wrong at the
 physical level. Databases are typically agnostic to the specific protections
-that any given installation is using. The protections might be in the
-[filesystem itself](https://en.wikipedia.org/wiki/ZFS) but it's more usual to
-push them down to the lower layers of RAID controllers and drive firmware.
-However it is impossible to truly guarantee protection against [silent
-corruption](https://en.wikipedia.org/wiki/Data_corruption#Silent) and this
-happens often enough that many databases add their own mechanisms for detecting
-and correcting those rare cases where the data that they read isn't the data
-that they previously wrote.
+that any given installation is using and mostly just assume that the data they
+read from disk is the data they wrote there previously. The protections might
+be in the [filesystem itself](https://en.wikipedia.org/wiki/ZFS) but it's more
+usual to push them down to the lower layers of RAID controllers and drive
+firmware. However it is impossible to truly guarantee protection against
+[silent corruption](https://en.wikipedia.org/wiki/Data_corruption#Silent) and
+this happens often enough that many databases add their own mechanisms for
+detecting and correcting those rare cases where the data that they read isn't
+the data that they previously wrote.
 
 Apache Lucene has a simple but effective mechanism for detecting corruption
 which the lower layers missed: every relevant file in a Lucene index includes a
@@ -73,7 +74,8 @@ setup which hasn't seen enough real-world use to shake out the bugs. Lucene's
 behaviour during a power outage on properly configured storage is
 [well-tested](http://blog.mikemccandless.com/2014/04/testing-lucenes-index-durability-after.html)
 but many storage systems are not properly configured and may be vulnerable to
-[corrupting data on power loss](https://brad.livejournal.com/2116715.html).
+[corrupting data on power loss]({% post_url 2020-12-26-testing-corruption
+%}#corruption-on-power-loss).
 [Filesystem](https://bugzilla.redhat.com/show_bug.cgi?id=1390050)
 [bugs](https://bugzilla.redhat.com/show_bug.cgi?id=1379568), [kernel
 bugs](https://www.elastic.co/blog/canonical-elastic-and-google-team-up-to-prevent-data-corruption-in-linux),
@@ -96,6 +98,8 @@ applications there's usually at least one exchange where the storage team says
 it must be an application bug because there's no evidence that anything went
 wrong at the storage layer, ignoring of course that a checksum mismatch itself
 is pretty convincing evidence that there was a problem with the storage system.
+Some [simple empirical tests]({% post_url 2020-12-26-testing-corruption
+%}#write-time-corruption) are probably a good idea.
 
 When you hear hoofbeats, [look for horses not
 zebras](https://en.wikipedia.org/wiki/Zebra_%28medicine%29): Lucene's mechanism
