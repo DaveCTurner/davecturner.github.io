@@ -89,5 +89,5 @@ This is a pretty aggressive test so it's not a good idea to run it on systems
 while they're in production. By default it will run for 24 hours which I think
 is reasonable.
 
-Make sure that you're using a new enough version of `stress-ng` too, versions
-0.12.0 and older did not test things so thoroughly.
+Make sure that you're using at least version 0.12.01 of `stress-ng` too: older
+versions did not test things so thoroughly.
