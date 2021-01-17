@@ -88,8 +88,9 @@ cutting-edge your storage subsystem is the higher the chances of encountering
 this sort of bug. But of course it could genuinely be faulty hardware too,
 maybe the [RAID controller](https://community.perforce.com/s/article/2410),
 maybe the [drive](https://www.backblaze.com/b2/hard-drive-test-data.html)
-itself, or maybe even your [RAM](https://en.wikipedia.org/wiki/ECC_memory).
-These things do happen.
+itself, or maybe even your
+[RAM](https://discuss.elastic.co/t/253215/4?u=davidturner). These things do
+happen.
 
 The trouble with silent corruption is that it's _silent_, it typically doesn't
 result in log entries or other evidence of corruption apart from the checksum
