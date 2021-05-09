@@ -20,7 +20,11 @@ Digital clocks rarely _stop_ (they tend to just die) but it's concievable that
 one could have a fault that stops its display from updating. Arguably if the
 fault resulted in the display showing something that's not a time then it's
 never right, so let's define a stopped clock as something that actually shows a
-time.
+time. (**Addendum 2021-05-09**: an analogue clock with randomly positioned
+hands also almost certainly does not show a valid time, and is similarly
+excluded, thanks
+[@happydisciple](https://twitter.com/happydisciple/status/1391373804253896710?s=20)
+for the additional pedantry).
 
 If you're allowed to move timezone then it's easy to find a counterexample:
 simply go one timezone east at 0600 (local time) and then another at 1800
