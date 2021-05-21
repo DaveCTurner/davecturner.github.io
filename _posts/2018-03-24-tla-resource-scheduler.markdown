@@ -215,7 +215,7 @@ The next-state relation is simply the disjunction of all of these actions.
 
 There are three fairness properties to consider. Firstly, as discussed above,
 now `Return` is only subject to a fairness constraint when the client is
-completel satisfied, due to the extra `id<$unsat,#c> = #{}` condition:
+completely satisfied, due to the extra `id<$unsat,#c> = #{}` condition:
 
       fixes ReturnFair :: "Client ⇒ temporal"
       defines "ReturnFair c ≡ TEMP WF(∃S. id<$unsat,#c> = #{}

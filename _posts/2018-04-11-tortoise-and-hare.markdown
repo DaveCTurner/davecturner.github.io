@@ -630,7 +630,7 @@ transition, and `h'` is the cell in between `hare s` and `hare t`. The first
 and third statements say that moving the `hare` one cell forwards reduces the
 distance to the tortoise by 1, which requres that the `hare` does not overtake
 the `tortoise` in either of these steps, but fortunately we've already
-accounted for this. The third statement says that moving the `tortoise` one
+accounted for this. The second statement says that moving the `tortoise` one
 step forward does not increase the distance from the hare by more than one, so
 that overall the distance _does_ decrease. The sequence of operations is
 important here:
