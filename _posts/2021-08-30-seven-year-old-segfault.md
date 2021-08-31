@@ -303,3 +303,12 @@ Finally, this leads us to a proper fix: we don't need to give the
 `elasticsearch` user a whole home directory, instead we should be able to [set
 `$LIBFFI_TMPDIR`](https://github.com/elastic/elasticsearch/issues/77014) to
 point to the same directory that JNA uses.
+
+---
+
+*Addendum 2021-08-31*: a colleague pointed out that JNA contains a vendored
+version of `libffi`, and the version of `libffi` used by the latest release of
+JNA dates back to [before support for the `LIBFFI_TMPDIR` environment
+variable](https://github.com/java-native-access/jna/blob/030411b909d5dfd249b1df09a7f24c44babcae64/native/libffi/src/closures.c#L691-L695).
+This'll be the right fix eventually, but until then the best we can do is to
+set `TMPDIR` or `HOME`.
