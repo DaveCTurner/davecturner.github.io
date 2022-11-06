@@ -3,6 +3,8 @@ author: ""
 baseurl: "/"
 url: "https://davecturner.github.io"
 twitter_username: "DaveCTurner"
+mastodon_username: "davecturner"
+mastodon_instance: "mastodon.online"
 
 markdown: kramdown
 theme: minima
