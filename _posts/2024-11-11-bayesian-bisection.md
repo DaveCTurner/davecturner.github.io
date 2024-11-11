@@ -125,3 +125,8 @@ f(p) = P(observed results \| p)<br>
 where successes<sub>≥k</sub> and failures<sub>≥k</sub> are respectively the
 number of successes and failures observed at commit C<sub>k</sub> or a later
 commit.
+
+Note that if you re-estimate _p_ every iteration then the median doesn't quite
+behave as described above and it's not clear that the process eventually
+converges. It might make more sense to estimate _p_ only from the test results
+on commits that have been observed to fail.
