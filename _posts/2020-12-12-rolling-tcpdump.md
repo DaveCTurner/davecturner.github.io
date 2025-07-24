@@ -28,8 +28,8 @@ details including a (somewhat vague) description of how `tcpdump` names files
 when using these options. I will be using something like this:
 
 ```
-sudo tcpdump -G600 -C1000 -zgzip -wcapture-%s.pcap -s128 -i eth0 tcp port 12345 ...
-#                      adjust these bits according to taste ^^^^^^^^^^^^^^^^^^^^^^^
+sudo tcpdump -G600 -C1000 -zgzip -Z${USER} -wcapture-%s.pcap -s128 -i eth0 tcp port 12345 ...
+#                                adjust these bits according to taste ^^^^^^^^^^^^^^^^^^^^^^^
 ```
 
 This says to roll over every 10 minutes, and every 1GB, and to run `gzip` to
@@ -40,7 +40,8 @@ subsequent files are named `capture-1607780545.pcap1`,
 the eleventh file in each period is called `capture-1607780545.pcap10` which
 tends to sort between `capture-1607780545.pcap1` and
 `capture-1607780545.pcap2`. At the end of the ten-minute period it starts over
-again at `capture-1607781145.pcap`.
+again at `capture-1607781145.pcap`. The `-Z${USER}` bit means to do the file
+writing as the calling user rather than as `root`.
 
 Note that `tcpdump` will spawn `command` each time it rolls over to a new file.
 It does not itself limit how many of them are running concurrently, so it's
