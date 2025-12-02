@@ -2,5 +2,5 @@ Source for [https://davecturner.github.io/](https://davecturner.github.io/). You
 
 Run locally using
 
-    jekyll serve --drafts --future --host 0.0.0.0
+    bundle exec jekyll serve --drafts --future --host 0.0.0.0
 
