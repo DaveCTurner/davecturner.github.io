@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "TCP retransmissions"
-date:   2025-09-03
+date:   2025-12-02
 ---
 
 Distributed systems must always be able to _correctly_ deal with the non-delivery (or [non-acknowledgement](https://en.wikipedia.org/wiki/Two_Generals%27_Problem)) of a message, but in any reasonable network environment one can assume that message non-delivery is fairly rare. This means we need not behave _optimally_ in the case of a message non-delivery. In principle the system should still work correctly even if retransmissions were totally disabled, but in practice TCP uses packet loss to signal network congestion and apply backpressure so some small number of retransmissions are to be expected and need to be handled gracefully.
