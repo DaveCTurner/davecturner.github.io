@@ -18,7 +18,7 @@ Note however that the scope of this RFC is rather narrow:
     for a full-function Internet host, capable of full
     interoperation over an arbitrary Internet path.
 
-Most nodes in a modern distributed system are not a _full-function Internet host_ in this sense. Aside from nodes at the edge, very little traffic in such a system is sent over an _arbitrary Internet path_, and none goes over paths that behave like the internet did in October 1989 when this RFC was written. Instead, the nodes in the interior of the system will be communicating over a much more reliable and performant network and different configuration choices are appropriate for this kind of network environment.
+Most nodes in a modern distributed system are not a `full-function Internet host` in this sense. Aside from nodes at the edge, very little traffic in such a system is sent over an `arbitrary Internet path`, and none goes over paths that behave like the internet did in October 1989 when this RFC was written. Instead, the nodes in the interior of the system will be communicating over a much more reliable and performant network and different configuration choices are appropriate for this kind of network environment.
 
 See also this less-opinionated [blog post by Marco Pracucci](https://pracucci.com/linux-tcp-rto-min-max-and-tcp-retries2.html) on the same subject.
 
@@ -65,7 +65,7 @@ The mentioned "exponential backoff" uses a factor of two, and is also bounded ab
 | 14      | 11:24.6     | `RTO_MAX`       | 120.0     | 13:24.6
 | 15      | 13:24.6     | `RTO_MAX`       | 120.0     | 15:24.6
 
-I don't think I've ever encountered a situation where waiting for ≥15 minutes in case a message is finally delivered and acknowledged is the right thing to do.
+I don't think I've ever encountered a situation where waiting for ≥15 minutes in case a message is finally delivered and acknowledged is the right thing to do, and even waiting the RFC-1122-specified ≥100 seconds for 8 retransmissions is almost always excessive.
 
 If you instead set `tcp_retries2=5` then the system will report failure to deliver a message after a little under 13s, allowing for much more prompt corrective action. This will only happen if the connection in question failed to deliver 6 packets in a row which is incredibly unlikely to happen naturally. Assuming random and independent packet loss due to congestion etc. of 1%, the loss of 6 packets in a row would have probability 0.0000000001%. Put differently, if you find you are getting connection timeouts with `tcp_retries2=5` then the packet loss is almost certainly non-random, and therefore something deserving of investigation and a remedy.
 
