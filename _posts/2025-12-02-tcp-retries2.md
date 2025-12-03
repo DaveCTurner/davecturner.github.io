@@ -12,7 +12,13 @@ The latest standard on the subject of retransmissions is [RFC 1122](https://data
 
     The value of R2 SHOULD correspond to at least 100 seconds.
 
-I could believe that might have made sense in October 1989 when this RFC was published, but it is frankly nonsensical in most modern distributed systems.
+Note however that the scope of this RFC is rather narrow:
+
+    The requirements spelled out in this document are designed
+    for a full-function Internet host, capable of full
+    interoperation over an arbitrary Internet path.
+
+Most nodes in a modern distributed system are not a _full-function Internet host_ in this sense. Aside from nodes at the edge, very little traffic in such a system is sent over an _arbitrary Internet path_, and none goes over paths that behave like the internet did in October 1989 when this RFC was written. Instead, the nodes in the interior of the system will be communicating over a much more reliable and performant network and different configuration choices are appropriate for this kind of network environment.
 
 See also this less-opinionated [blog post by Marco Pracucci](https://pracucci.com/linux-tcp-rto-min-max-and-tcp-retries2.html) on the same subject.
 
@@ -61,7 +67,7 @@ The mentioned "exponential backoff" uses a factor of two, and is also bounded ab
 
 I don't think I've ever encountered a situation where waiting for ≥15 minutes in case a message is finally delivered and acknowledged is the right thing to do.
 
-If you instead set `tcp_retries2=5` then the system will report failure to deliver a message after a little under 13s, allowing for much more prompt corrective action. This will only happen if the connection in question failed to deliver 6 packets in a row which is incredibly unlikely to happen naturally. Assuming random and independent packet loss due to congestion etc. of 1%, the loss of 6 packets in a row would have probability 0.0000000001%. Put differently, if you find you are getting connection timeouts with `tcp_retries2=5` then the packet loss is almost certainly non-random, and therefore something you can investigate and fix.
+If you instead set `tcp_retries2=5` then the system will report failure to deliver a message after a little under 13s, allowing for much more prompt corrective action. This will only happen if the connection in question failed to deliver 6 packets in a row which is incredibly unlikely to happen naturally. Assuming random and independent packet loss due to congestion etc. of 1%, the loss of 6 packets in a row would have probability 0.0000000001%. Put differently, if you find you are getting connection timeouts with `tcp_retries2=5` then the packet loss is almost certainly non-random, and therefore something deserving of investigation and a remedy.
 
 ### Linux ≥6.15
 
@@ -86,4 +92,4 @@ Starting in Linux 6.15 the `TCP_RTO_MAX` value can be adjusted at runtime via th
 | 14      | 0:12.4      | `RTO_MAX`       | 1.0       | 0:13.4
 | 15      | 0:13.4      | `RTO_MAX`       | 1.0       | 0:14.4
 
-A timeout in 14 seconds is vastly preferable to waiting 15 minutes. It remains to be seen whether such frequent retransmissions can have negative consequences, perhaps even causing additional network congestion and further packet loss, but I expect this will be preferable in very many situations.
+A timeout in under 15 seconds is vastly preferable to waiting over 15 minutes. It remains to be seen whether such frequent retransmissions can have negative consequences, perhaps even causing additional network congestion and further packet loss, but I expect this will behave better in very many situations.
