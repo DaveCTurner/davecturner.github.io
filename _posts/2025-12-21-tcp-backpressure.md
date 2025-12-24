@@ -31,14 +31,14 @@ is open again, inviting the sender to continue sending data.
 
 One of the misunderstandings about this mechanism is the belief that there must
 be some kind of timeout after which a connection in the zero-window
-backpressure state indicates some kind of error condition and should be closed.
-[RFC 1122](https://datatracker.ietf.org/doc/html/rfc1122#page-92) says that
-this is not the case:
+backpressure state indicates an error condition and should be closed. [RFC
+1122](https://datatracker.ietf.org/doc/html/rfc1122#page-92) says that this is
+not the case:
 
-            A TCP MAY keep its offered receive window closed
-            indefinitely.  As long as the receiving TCP continues to
-            send acknowledgments in response to the probe segments, the
-            sending TCP MUST allow the connection to stay open.
+    A TCP MAY keep its offered receive window closed
+    indefinitely.  As long as the receiving TCP continues to
+    send acknowledgments in response to the probe segments, the
+    sending TCP MUST allow the connection to stay open.
 
 There is no need for any timeout here because the zero-window state is actively
 maintained by the two endpoints: the prospective sender repeatedly sends
@@ -59,14 +59,14 @@ sending TCP keepalives.
 [RFC 1122](https://datatracker.ietf.org/doc/html/rfc1122#page-92) has some
 recommendations about the exact timings of the zero-window probes:
 
-            The transmitting host SHOULD send the first zero-window
-            probe when a zero window has existed for the retransmission
-            timeout period (see Section 4.2.2.15), and SHOULD increase
-            exponentially the interval between successive probes.
+    The transmitting host SHOULD send the first zero-window
+    probe when a zero window has existed for the retransmission
+    timeout period (see Section 4.2.2.15), and SHOULD increase
+    exponentially the interval between successive probes.
 
-            [...]                   Exponential backoff is
-            recommended, possibly with some maximum interval not
-            specified here.
+    [...]                   Exponential backoff is
+    recommended, possibly with some maximum interval not
+    specified here.
 
 In practice a maximum is essential, or else the sender may wait for
 unreasonably long before discovering that the window has reopened. For example,
@@ -136,8 +136,8 @@ time between the probes. I couldn't find this mentioned in any documentation
 but [this is where it's implemented in
 `tcp_send_probe0()`](https://github.com/torvalds/linux/blob/9094662f6707d1d4b53d18baba459604e8bb0783/net/ipv4/tcp_output.c#L4583-L4584):
 
-        if (icsk->icsk_backoff < READ_ONCE(net->ipv4.sysctl_tcp_retries2))
-            icsk->icsk_backoff++;
+    if (icsk->icsk_backoff < READ_ONCE(net->ipv4.sysctl_tcp_retries2))
+        icsk->icsk_backoff++;
 
 Here `icsk->icsk_backoff` is the backoff counter, visible using tools such as
 `ss -tonie`, and from which the re-probe interval is computed. The effect of
@@ -181,29 +181,29 @@ timely a fashion as ones with empty send buffers.
 Linux's `TCP_USER_TIMEOUT` socket option has the following meaning according to
 [`man tcp`](https://man7.org/linux/man-pages/man7/tcp.7.html):
 
-       TCP_USER_TIMEOUT (since Linux 2.6.37)
-              This option takes an unsigned int as an argument.  When the
-              value is greater than 0, it specifies the maximum amount of
-              time in milliseconds that transmitted data may remain
-              unacknowledged, or buffered data may remain untransmitted
-              (due to zero window size) before TCP will forcibly close
-              the corresponding connection and return ETIMEDOUT to the
-              application.  If the option value is specified as 0, TCP
-              will use the system default.
+    TCP_USER_TIMEOUT (since Linux 2.6.37)
+        This option takes an unsigned int as an argument.  When the
+        value is greater than 0, it specifies the maximum amount of
+        time in milliseconds that transmitted data may remain
+        unacknowledged, or buffered data may remain untransmitted
+        (due to zero window size) before TCP will forcibly close
+        the corresponding connection and return ETIMEDOUT to the
+        application.  If the option value is specified as 0, TCP
+        will use the system default.
 
-              [...]
+        [...]
 
-              Further details on the user timeout feature can be found in
-              RFC 793 and RFC 5482 ("TCP User Timeout Option").
+        Further details on the user timeout feature can be found in
+        RFC 793 and RFC 5482 ("TCP User Timeout Option").
 
 However, [RFC 5482](https://datatracker.ietf.org/doc/html/rfc5482) describes
 a subtly different timeout:
 
-        The Transmission Control Protocol (TCP) specification [RFC0793]
-        defines a local, per-connection "user timeout" parameter that
-        specifies the maximum amount of time that transmitted data may remain
-        unacknowledged before TCP will forcefully close the corresponding
-        connection.
+    The Transmission Control Protocol (TCP) specification [RFC0793]
+    defines a local, per-connection "user timeout" parameter that
+    specifies the maximum amount of time that transmitted data may remain
+    unacknowledged before TCP will forcefully close the corresponding
+    connection.
 
 This RFC specifies a TCP option allowing endpoints to communicate such a
 timeout to each other, but as far as I can tell Linux doesn't make use of this
@@ -212,11 +212,11 @@ facility even if `TCP_USER_TIMEOUT` is set.
 Confusingly [RFC 793](https://datatracker.ietf.org/doc/html/rfc0793) describes
 such a "user timeout" with different semantics again:
 
-        The timeout, if present, permits the caller to set up a timeout
-        for all data submitted to TCP.  If data is not successfully
-        delivered to the destination within the timeout period, the TCP
-        will abort the connection.  The present global default is five
-        minutes.
+    The timeout, if present, permits the caller to set up a timeout
+    for all data submitted to TCP.  If data is not successfully
+    delivered to the destination within the timeout period, the TCP
+    will abort the connection.  The present global default is five
+    minutes.
 
 This is the timeout specified in Linux by the `SO_SNDTIMEO` socket option, not
 `TCP_USER_TIMEOUT`.
@@ -225,25 +225,24 @@ The difference between the timeout described in RFC 5482 and the implementation
 of the `TCP_USER_TIMEOUT` option in Linux is subtle but vitally important when
 considering TCP backpressure. The RFC 5482 timeout only considers
 _unacknowledged_ data, but a TCP connection in a zero-window state has no
-unacknowledged data and thus this timeout will not take effect. In contrast,
+unacknowledged data and thus this timeout should have no effect. In contrast,
 the `TCP_USER_TIMEOUT` socket option also considers _untransmitted_ data and
 thus imposes a time limit on any backpressure situation after which the
 connection is closed, violating [RFC
 1122](https://datatracker.ietf.org/doc/html/rfc1122#page-92):
 
-            A TCP MAY keep its offered receive window closed
-            indefinitely.  As long as the receiving TCP continues to
-            send acknowledgments in response to the probe segments, the
-            sending TCP MUST allow the connection to stay open.
+    A TCP MAY keep its offered receive window closed
+    indefinitely.  As long as the receiving TCP continues to
+    send acknowledgments in response to the probe segments, the
+    sending TCP MUST allow the connection to stay open.
 
-Unfortunately this makes this option useless, if not positively harmful, in a
-system that makes proper use of TCP backpressure. I can imagine ways that it
-might be appropriate to use in Cloudflare's particular situation, but it does
-not apply more generally.
+Unfortunately this makes this feature useless, indeed harmful, in a system that
+relies on TCP backpressure. I can imagine ways that it might be appropriate to
+use in Cloudflare's particular situation, but it does not apply more generally.
 
 Although the `tcp_retries2` option does get a brief mention in Cloudflare's
 post, the author fails to explore the consequences of reducing this from its
 unreasonably large default of `15` down to something more sensible. Had they
-done so, I suspect they might have concluded that this is a more effective
-solution to the problems they were describing than the
-backpressure-incompatible `TCP_USER_TIMEOUT` option.
+done so, they might have concluded that this is a more effective solution to
+the problems they were describing than the backpressure-incompatible
+`TCP_USER_TIMEOUT` option.
