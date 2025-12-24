@@ -71,9 +71,9 @@ above by `TCP_RTO_MAX`, where the constants are [defined as the following
 numbers of
 jiffies](https://github.com/torvalds/linux/blob/4a26e7032d7d57c998598c08a034872d6f0d3945/include/net/tcp.h#L161-L163):
 
-        #define TCP_RTO_MAX_SEC 120
-        #define TCP_RTO_MAX ((unsigned)(TCP_RTO_MAX_SEC * HZ))
-        #define TCP_RTO_MIN ((unsigned)(HZ / 5))
+    #define TCP_RTO_MAX_SEC 120
+    #define TCP_RTO_MAX ((unsigned)(TCP_RTO_MAX_SEC * HZ))
+    #define TCP_RTO_MIN ((unsigned)(HZ / 5))
 
 `HZ` is a compile-time-configurable constant representing the number of jiffies
 per second, so these values work out to 200ms and 120s respectively. This is
