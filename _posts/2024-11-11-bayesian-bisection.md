@@ -98,7 +98,7 @@ In effect, it re-tests some commits that we were previously considering to be
 probably good, gathering more information about their quality. If we've seen a
 failure on the actual first-bad commit then the median will creep upwards until
 it arrives at the last-good commit, where it will stay. So the results will
-include be a sequence of successes as long as you'd like on one commit, and a
+include a sequence of successes as long as we'd like on one commit, and a
 failure on the next commit, giving us as much confidence as we'd like that
 we've found the first bad commit.
 
