@@ -204,11 +204,11 @@ Here's a conceptual outline of the Bayesian bisection algorithm:
         and use this for the initial estimate of the flakiness probability _p_
         for the test.
 2.  **Iterate**:
-    *   **Select Next Commit**: Identify the median commit C<sub>j</sub> based
+    *   **Select next commit**: Identify the median commit C<sub>j</sub> based
         on the current probability distribution P<sub>i</sub>. If the median
         commit is known to be bad, choose between this commit and the next one so as to
         keep the number of runs on each commit reasonably equal.
-    *   **Run Test**: Execute the flaky test on C<sub>j</sub>.
+    *   **Run test**: Execute the flaky test on C<sub>j</sub>.
     *   **Re-estimate _p_**: Recompute the estimate of the flakiness
         probability _p_ as the number of failures of commits known to be bad
         divided by the total number of runs on those commits.
