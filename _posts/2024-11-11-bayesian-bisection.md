@@ -113,9 +113,8 @@ uniform distribution is easiest to implement so I suggest to use that.
 ### Testing the median
 
 Given such a probability distribution, it makes the most sense to do the next
-test run on the _median_ commit: the first commit C<sub>j</sub> such that
-∑<sub>i≤j</sub> P<sub>i</sub> ≥ ½. Testing the median commit is best because
-its outcome (pass or fail) most evenly divides the remaining probability space,
+test run on the _median_ commit, because
+the outcome of this run (pass or fail) most evenly divides the remaining probability space,
 meaning it provides the maximum possible expected reduction in uncertainty
 about the location of the first bad commit.
 
@@ -123,31 +122,11 @@ Repeatedly testing the median commit according to the posterior probability
 distribution has an intuitively useful behaviour: as tests pass the median will
 slowly creep upwards towards the first known-bad commit, and then whenever a
 test fails it will jump downwards again. In effect, it re-tests some commits
-that we were previously considering to be probably good, gathering more
-information about their quality. If we've seen a failure on the actual
-first-bad commit then the median will creep upwards until it arrives at the
-first-bad commit, where it will stay.
-
-However, as the algorithm enters the endgame and the distribution becomes more
-and more concentrated at the first-bad commit, eventually the first-bad commit
-will _become_ the median commit. It's certainly useful to keep running further
-tests on this commit in order to refine our estimates of the flakiness
-probability _p_ (see below) but we must also run tests on the previous commit,
-believed to be the last-good commit, in case it turns out that this commit is
-also bad. My preference is to switch between these two commits so as to
-equalise the number of iterations run on each of them, because this ultimately
-yields a sequence of test runs on the bad commit, some of which failed, and a
-similar length of sequence of test runs on the previous commit, all of which
-passed, which forms an intuitively compelling argument that we've really found
-the first bad commit even without having to resort to any probability
-calculations.
-
-As a slight further refinement, in the endgame I prefer to run the tests
-several times in a row on each commit before switching to the other one, which
-amortises the overheads associated with switching commits such as having to
-recompile the system under test. I found it works well to run around ten tests
-in a row on each commit before switching to the other one, but you may find a
-different number works better in other cases.
+that we were previously believed to be good, gathering more
+information about their quality and possibly discovering a failure on an earlier commit than
+the previous best. If we've seen a failure on the actual
+first-bad commit then the median will creep upwards until it is between the
+first-bad and last-good commits, where it will stay.
 
 Note that the speed at which the median creeps towards the first known-bad
 commit is determined by _p_. The rarer the test failures on bad commits, the
@@ -157,6 +136,37 @@ relatively likely then the median commits moves more quickly. In the limit, if
 the test is not flaky at all (so _p_ is 1) and we start from a uniform prior
 distribution then testing the median will do a standard binary search exactly
 like regular bisection does.
+
+Since this is a discrete probability distribution there typically is no
+commit which is the exact median. Instead, one must choose between the _submedian_ commit,
+i.e. the last commit C<sub>j</sub> such that ∑<sub>i≤j</sub> P<sub>i</sub> ≤ ½, 
+and the _supermedian_ commit, i.e. the first commit C<sub>j</sub> such that
+∑<sub>i≤j</sub> P<sub>i</sub> ≥ ½. When the algorithm is just starting out
+the difference is fairly unimportant, but as things converge it
+turns out that neither of these choices alone behaves quite as desired: we
+must repeatedly test the believed-last-good commit in case it turns out to be bad,
+but always choosing the submedian can end up focussing on the
+commit just before the believed-last-good commit, whereas always choosing the
+supermedian will end up focussing on the believed-first-bad commit instead.
+
+My preferred solution is to choose whichever of the submedian or supermedian commits has
+had fewer test runs so far. In the endgame, this scheme means the algorithm alternates
+between the last-good and first-bad commits, which has some useful consequences.
+Running further tests on the first-bad commit helps to refine our estimate of the flakiness
+probability _p_ (see below), while repeatedly checking the believed-last-good commit
+will eventually see a failure if this commit is in fact bad.
+Additionally, this scheme produces a sequence of test runs on a bad commit, some of which failed, and a
+similar length of sequence of test runs on the previous commit, all of which
+passed, which forms an intuitively compelling argument that we've really found
+the first bad commit even without having to resort to any probability
+calculations.
+
+As a slight further refinement, I instead choose the commit with the smaller value of ⌊runs÷10⌋,
+preferring the submedian in case of a tie. Rather than alternating between the two commits each time, this
+runs ten tests in a row on each commit before switching to the other one. Doing several runs on each commit
+amortises the overheads associated with switching commits, such as having to
+recompile the system under test. You may find a
+different number works better in other cases according to your commit-switching overheads.
 
 ### Estimating _p_
 
@@ -171,7 +181,7 @@ results we've seen, and then use the value of _p_ which maximises this
 function:
 
 f(p) = P(observed results \| p)<br>
-&nbsp;&nbsp;= ∑<sub>k</sub> P(observed results ∧ C<sub>k</sub> is the first bad commit \| p)
+&nbsp;&nbsp;= ∑<sub>k</sub> P(observed results ∧ C<sub>k</sub> is the first bad commit \| p)<br>
 &nbsp;&nbsp;= ∑<sub>k</sub> p<sup>successes<sub>≥k</sub></sup> (1-p)<sup>failures<sub>≥k</sub></sup>
 
 where successes<sub>≥k</sub> and failures<sub>≥k</sub> are respectively the
@@ -204,10 +214,10 @@ Here's a conceptual outline of the Bayesian bisection algorithm:
         and use this for the initial estimate of the flakiness probability _p_
         for the test.
 2.  **Iterate**:
-    *   **Select next commit**: Identify the median commit C<sub>j</sub> based
-        on the current probability distribution P<sub>i</sub>. If the median
-        commit is known to be bad, choose between this commit and the next one so as to
-        keep the number of runs on each commit reasonably equal.
+    *   **Select next commit**: Identify the submedian and supermedian commits
+        according to the current probability distribution P<sub>i</sub>. Choose
+        whichever has smaller value of ⌊runs÷10⌋, preferring the submedian in case
+        of a tie, and call it C<sub>j</sub>.
     *   **Run test**: Execute the flaky test on C<sub>j</sub>.
     *   **Re-estimate _p_**: Recompute the estimate of the flakiness
         probability _p_ as the number of failures of commits known to be bad
