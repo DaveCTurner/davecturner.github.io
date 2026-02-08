@@ -21,7 +21,7 @@ didn't get lucky this time. So you run it again. And again. But how many good
 runs in a row do you need before you can consider the commit to be good?
 
 To give some figures from a recent example, I was recently chasing down a test
-that started to fail roughly approximately once in ~2700 runs. Each run of the
+that started to fail approximately once in every ~2700 runs. Each run of the
 test took around 6 seconds so you could expect a bad commit to fail in around
 4-and-a-half hours. The offending commit was somewhere in a range of about a
 thousand commits, so in principle should be findable with a binary search of 10
