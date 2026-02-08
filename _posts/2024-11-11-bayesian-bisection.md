@@ -29,12 +29,12 @@ steps.
 
 One possible strategy would be to consider a commit that gets 2700 successful
 runs in a row to be good, and carry on with the normal binary search process.
-This would take a couple of days to narrow the search down to a single commit.
-But consider what happens with this strategy if we were just unlucky and a bad
-commit took a little longer than expected to fail. In this case, we discard the
-half of the commit range that actually contains the first bad commit, and the
-binary search process will terminate pointing to an earlier, and actually good,
-commit.
+This would take a couple of days to complete the 10 steps needed to narrow the
+search down to a single commit. But consider what happens with this strategy if
+we were just unlucky and a bad commit took a little longer than expected to
+fail. In this case, we discard the half of the commit range that actually
+contains the first bad commit, and the binary search process will terminate
+pointing to an earlier, and actually good, commit.
 
 We can improve on this by looking for longer sequences of successful runs
 before considering a commit to be good. For instance, we could wait until we've
@@ -54,21 +54,28 @@ It'd be awfully nice if we could use the output of the preceding hours of test
 runs to influence the restarted search somehow. This is where Bayesian
 inference steps in, allowing us to generalize traditional binary search into
 one which takes account of the probabilistic nature of the test results and
-continuously updates our belief about which commit introduced the flakiness.
-This is a rough sketch of something I hacked together to do just that, speeding
-up the process of finding the first flaky commit.
+continuously updates our belief about which commit introduced the flakiness
+based on the history of failures and successes.
 
 ### Bayesian inference
 
 Rather than treating the outcome of a test run as a binary pass-or-fail thing,
 we can model the system in terms of probabilities. Specifically, consider a
-sequence of commits C<sub>i</sub> for i ∈ {1..N}, the first of which is good
-and the last of which is bad, and a discrete distribution of probabilities that
-each respective commit is the first bad one: P<sub>i</sub> = P(C<sub>i</sub> is
-the first bad commit).
+sequence of commits C<sub>i</sub> for i ∈ {1..N} together with some k ∈ {2..N}
+such that the initial subsequence C<sub>i&lt;k</sub> are all _good_, reliably
+passing some test, and the remainder C<sub>i≥k</sub> are all _bad_,
+occasionally failing the test with flakiness probability _p_. Assume also that
+the failures of distinct test runs are independent. Our goal is to identify the
+first bad commit C<sub>k</sub>, which we will do by computing a discrete
+probability distribution P<sub>i</sub> = P(C<sub>i</sub> is the first bad
+commit) based on a history of successes and failures on the various commits in
+the sequence.
 
-Given the result of a test run at commit C<sub>j</sub> we can update this prior
-distribution using [Bayes' theorem](https://en.wikipedia.org/wiki/Bayes%27_theorem):
+This computation works iteratively: given any prior distribution P<sub>i</sub>
+and another test result at commit C<sub>j</sub>, we can compute a posterior
+distribution P'<sub>i</sub> which incorporate the evidence from the new test
+result into the distribution using [Bayes'
+theorem](https://en.wikipedia.org/wiki/Bayes%27_theorem):
 
 P'<sub>i</sub> = P(C<sub>i</sub> is the first bad commit \| test result at C<sub>j</sub>)<br>
 &nbsp;&nbsp;= P(test result at C<sub>j</sub> \| C<sub>i</sub> is the first bad commit)<br>
@@ -76,7 +83,7 @@ P'<sub>i</sub> = P(C<sub>i</sub> is the first bad commit \| test result at C<sub
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;÷ P(test result at commit C<sub>j</sub>)<br>
 &nbsp;&nbsp;∝ P(test result at C<sub>j</sub> \| C<sub>i</sub> is the first bad commit) × P<sub>i</sub>
 
-... noting that the denominator P(tests passed at commit C<sub>j</sub>) is
+... noting that the denominator P(test result at commit C<sub>j</sub>) is
 independent of i and is really more like a normalization factor that scales all
 the numbers so that they sum to 1 again. Thus we can compute the posterior
 distribution by multiplying each probability in the prior distribution by a
@@ -88,25 +95,26 @@ factor which depends on the probability _p_ of a test failing on a bad commit:
 In words: given a prior distribution of probabilities that each commit in a
 sequence is the first bad commit, and another test result on a commit
 C<sub>j</sub>, compute the posterior distribution of those probabilities as
-follows. If the test passed at C<sub>j</sub>, multiply by (1-_p_) the
-probabilities of all C<sub>i</sub> for i ≤ j, to reflect that it has now become
+follows. If the test passed at C<sub>j</sub> then multiply by (1-_p_) the
+probabilities of all C<sub>i</sub> for i ≤ j to reflect that it has now become
 slightly less likely that any of these commits is the first bad one. In
 contrast, if the test failed on a commit C<sub>j</sub> then it has now become
-impossible for any earlier commit to be the first bad one, so sets to zero the
+impossible for any earlier commit to be the first bad one, so set to zero the
 probabilities of all commits C<sub>i</sub> for j < i. In the latter case there
 is in fact no need to multiply the remaining probabilities by _p_, as the above
-formula suggests, because they will need to be renormalized anyway.
+formula suggests, because we are only working up to proportionality and we must
+renormalize everything to sum to 1 to compute the true probabilities anyway.
 
 Doing this repeatedly for a sequence of test results yields a posterior
 probability distribution which reflects all the knowledge gathered from those
 test runs. The initial prior distribution is not particularly important, but a
-uniform distribution makes sense to me.
+uniform distribution is easiest to implement so I suggest to use that.
 
 ### Testing the median
 
 Given such a probability distribution, it makes the most sense to do the next
-test run on the _median_ commit: the last commit C<sub>k</sub> such that
-∑<sub>i≤k</sub> P<sub>i</sub> ≤ ½. Testing the median commit is optimal because
+test run on the _median_ commit: the last commit C<sub>j</sub> such that
+∑<sub>i<j</sub> P<sub>i</sub> < ½. Testing the median commit is optimal because
 its outcome (pass or fail) most evenly divides the remaining probability space,
 meaning it provides the expected maximum possible reduction in uncertainty
 about the location of the first bad commit.
@@ -122,7 +130,7 @@ first-bad commit, where it will stay.
 
 However, as the algorithm enters the endgame and the distribution becomes more
 and more concentrated at the first-bad commit, eventually the first-bad commit
-will become the median commit. It's certainly useful to keep running further
+will _become_ the median commit. It's certainly useful to keep running further
 tests on this commit in order to refine our estimates of the flakiness
 probability _p_ (see below) but we must also run tests on the previous commit,
 believed to be the last-good commit, in case it turns out that this commit is
@@ -130,31 +138,33 @@ also bad. My preference is to switch between these two commits so as to
 equalise the number of iterations run on each of them, because this ultimately
 yields a sequence of test runs on the bad commit, some of which failed, and a
 similar length of sequence of test runs on the previous commit, all of which
-passed, which forms a compelling argument that we've really found the first bad
-commit even without having to resort to any probability calculations.
+passed, which forms an intuitively compelling argument that we've really found
+the first bad commit even without having to resort to any probability
+calculations.
 
-As a slight further refinement, in the endgame I prefer to run a sequence of
-tests on each commit before switching to the other one, to avoid the overheads
-associated with switching commits such as having to recompile the system under
-test. I have typically chosen to run ten such commits on each one before
-switching.
+As a slight further refinement, in the endgame I prefer to run the tests
+several times in a row on each commit before switching to the other one, which
+amortises the overheads associated with switching commits such as having to
+recompile the system under test. I found it works well to run around ten tests
+in a row on each commit before switching to the other one, but you may find a
+different number works better in other cases.
 
 Note that the speed at which the median creeps towards the first known-bad
 commit is determined by _p_. The rarer the test failures on bad commits, the
 slower the median commit moves, so that the algorithm spends more time testing
-potentially-bad commits. In contrast, if test failures are relatively likely
-then the median commits moves more quickly. In the limit, if the test is not
-flaky at all (so _p_ is 1) and we start from a uniform prior distribution then
-testing the median will do a standard binary search exactly like regular
-bisection does.
+commits further from the known-bad ones. In contrast, if test failures are
+relatively likely then the median commits moves more quickly. In the limit, if
+the test is not flaky at all (so _p_ is 1) and we start from a uniform prior
+distribution then testing the median will do a standard binary search exactly
+like regular bisection does.
 
 ### Estimating _p_
 
 The process described above assumes we know roughly how flaky the test is, i.e.
 we have a good estimate for _p_. In fact whatever value we use for _p_ will
 still yield the right quantitative behaviour and find the right commit in the
-end, it just might move the median around at the wrong speed. But we can
-compute a reasonable estimate for _p_ using [maximum likelihood
+end, it just might move the median around at a suboptimal speed. We can compute
+a reasonable estimate for _p_ using [maximum likelihood
 estimation](https://en.wikipedia.org/wiki/Maximum_likelihood_estimation): write
 a function in terms of _p_ which calculates how likely it is to see the test
 results we've seen, and then use the value of _p_ which maximises this
@@ -176,8 +186,9 @@ Instead, I decided to estimate _p_ from the test results on commits which are
 known to be bad, simply dividing the number of failures by the total number of
 runs on these commits. At the very start of the process, when no test failures
 have been observed, it seems best to run the test repeatedly on the last commit
-in the sequence: the number of successful runs before this first failure gives
-a useful initial estimate for the actual failure probability.
+in the sequence C<sub>N</sub>: the number of successful runs on this commit
+before observing a failure gives a useful initial estimate for the actual
+failure probability.
 
 ### High-level Algorithm
 
