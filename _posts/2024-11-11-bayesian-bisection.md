@@ -116,7 +116,7 @@ Given such a probability distribution, it makes the most sense to do the next
 test run on the _median_ commit: the first commit C<sub>j</sub> such that
 ∑<sub>i≤j</sub> P<sub>i</sub> ≥ ½. Testing the median commit is best because
 its outcome (pass or fail) most evenly divides the remaining probability space,
-meaning it provides the expected maximum possible reduction in uncertainty
+meaning it provides the maximum possible expected reduction in uncertainty
 about the location of the first bad commit.
 
 Repeatedly testing the median commit according to the posterior probability
