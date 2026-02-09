@@ -73,14 +73,14 @@ the failures of distinct test runs are independent. Our goal is to identify the
 first bad commit C<sub>k</sub>, which we will do by computing a discrete
 probability distribution P<sub>i</sub> = P(C<sub>i</sub> is the first bad
 commit) based on a history of successes and failures on the various commits in
-the sequence, and then selecting further tests to run so as to concentrate the probability
-mass on a single commit in the sequence as efficiently as possible.
+the sequence, and then selecting further tests to run so as to concentrate the
+probability mass on a single commit in the sequence as efficiently as possible.
 
-The computation of the probability distribution works iteratively: given any prior distribution P<sub>i</sub>
-and another test result at commit C<sub>j</sub>, we can compute a posterior
-distribution P'<sub>i</sub> which incorporates the evidence from the new test
-result into the distribution using [Bayes'
-theorem](https://en.wikipedia.org/wiki/Bayes%27_theorem):
+The computation of the probability distribution works iteratively: given any
+prior distribution P<sub>i</sub> and another test result at commit
+C<sub>j</sub>, we can compute a posterior distribution P'<sub>i</sub> which
+incorporates the evidence from the new test result into the distribution using
+[Bayes' theorem](https://en.wikipedia.org/wiki/Bayes%27_theorem):
 
 P'<sub>i</sub> = P(C<sub>i</sub> is the first bad commit \| test result at C<sub>j</sub>)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;= P(test result at C<sub>j</sub> \| C<sub>i</sub> is the first bad commit)<br>
@@ -168,9 +168,9 @@ even without having to resort to any probability calculations.
 
 As a slight further refinement, I instead choose the commit with the smaller
 value of ⌊runs÷10⌋, preferring the submedian in case of a tie. Rather than
-strictly alternating between the two commits, using ⌊runs÷10⌋ runs ten tests in a row on
-each commit before switching to the other one. Doing several runs on each
-commit amortises the overheads associated with switching commits, such as
+strictly alternating between the two commits, using ⌊runs÷10⌋ runs ten tests in
+a row on each commit before switching to the other one. Doing several runs on
+each commit amortises the overheads associated with switching commits, such as
 having to recompile the system under test. You may find a different number
 works better in other cases according to your commit-switching overheads.
 
@@ -192,8 +192,9 @@ the new median commit.
 At the very start of the process, when no test failures have been observed,
 this estimate for _p_ is not well-defined. Instead, seed the process by running
 the test repeatedly on the last commit in the sequence C<sub>N-1</sub> until it
-fails. For instance, if the test succeeds for the first nine runs on C<sub>N-1</sub>
-and fails on the tenth then the initial estimate for _p_ will be ⅒.
+fails. For instance, if the test succeeds for the first nine runs on
+C<sub>N-1</sub> and fails on the tenth then the initial estimate for _p_ will
+be ⅒.
 
 ### Algorithm outline
 
