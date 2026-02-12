@@ -4,11 +4,11 @@ title:  "Pre-voting in distributed consensus"
 date:   2017-08-17 19:09:09 +0000
 ---
 
-[Ongaro's thesis](https://ramcloud.stanford.edu/~ongaro/thesis.pdf) describes
-an optional `PreVote` phase in Raft that is designed to prevent a partitioned
-server from disrupting the cluster by forcing a re-election when it rejoins the
-cluster. This article is about the benefits of using a similar mechanism in a
-Paxos implementation.
+[Ongaro's thesis](https://web.stanford.edu/~ouster/cgi-bin/papers/OngaroPhD.pdf)
+describes an optional `PreVote` phase in Raft that is designed to prevent a
+partitioned server from disrupting the cluster by forcing a re-election when it
+rejoins the cluster. This article is about the benefits of using a similar
+mechanism in a Paxos implementation.
 
 The trick with showing the liveness of a Paxos cluster boils down to making
 sure that nodes send the right quantitiy of `prepare` (a.k.a. phase `1a`)
