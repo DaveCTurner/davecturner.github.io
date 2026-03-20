@@ -81,5 +81,6 @@ there will only ever be finitely many (positive) leap seconds at which the time
 (2022)](https://www.bipm.org/en/cgpm-2022/resolution-4) effectively commits to
 eliminating leap seconds for at least a century, starting in 2035, possibly
 replacing them with some less frequent and coarser correction whose denotation
-is yet to be decided. Thus even the much weaker claim that _"a stopped clock is
-eventually right again"_ will (eventually) not be true.
+is yet to be decided but almost certainly won't include 61-second minutes. Thus
+even the much weaker claim that _"a stopped clock is eventually right again"_
+will (eventually) not be true.
