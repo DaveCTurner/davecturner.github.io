@@ -71,3 +71,15 @@ second](https://en.wikipedia.org/wiki/Leap_second) a digital clock (UTC
 timezone, 12-hour mode) should display `11:59:60`. If it got stuck with this on
 its display then it's a stopped clock (it's displaying a valid time) which is
 right much less frequently than once per day.
+
+---
+
+Edit 2026-03-20: The [Earth's rotation is
+slowing](https://en.wikipedia.org/wiki/Earth%27s_rotation) which means that
+there will only ever be finitely many (positive) leap seconds at which the time
+`11:59:60` would be valid. More immediately, [Resolution 4 of the 27th CGPM
+(2022)](https://www.bipm.org/en/cgpm-2022/resolution-4) effectively commits to
+eliminating leap seconds for at least a century, starting in 2035, possibly
+replacing them with some less frequent and coarser correction whose denotation
+is yet to be decided. Thus this is a counterexample to the much-weaker and thus
+much-more-plausible claim that _"a stopped clock is eventually right again"_.
